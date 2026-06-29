@@ -103,7 +103,6 @@ This file loads Vue, `vue3-sfc-loader`, and Tailwind Play CDN **dynamically** so
         return new Promise(function (resolve, reject) {
           var s = document.createElement('script')
           s.src = src
-          s.crossOrigin = 'anonymous'
           s.onload = resolve
           s.onerror = function () { reject(new Error('Failed to load ' + src)) }
           document.head.appendChild(s)
