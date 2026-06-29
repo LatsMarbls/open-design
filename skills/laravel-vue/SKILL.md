@@ -295,3 +295,4 @@ const submit = () => {
 - Each `.vue` file gets `<style scoped>` for component-local styles
 - Bind design system CSS variables from `app.css` — do not hardcode colors
 - Do NOT use `import { ... } from 'primevue'` in SFCs — the preview has no bundler. Use plain HTML elements (`<input>`, `<button>`, etc.) styled with design system tokens. PrimeVue can be added later when integrating into a real Vite-powered Laravel project
+- Do NOT use `sessionStorage` or `localStorage` in SFCs — the OD preview iframe is sandboxed (`sandbox="allow-scripts"` without `allow-same-origin`) and accessing Web Storage throws `SecurityError`. Use `ref()` for in-memory state instead. Page refreshes reset the iframe anyway, so in-memory state behaves identically
