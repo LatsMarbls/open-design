@@ -33,6 +33,8 @@ export type SrcdocOptions = {
   paletteBridge?: boolean;
   initialPalette?: string | null;
   previewFocusGuard?: boolean;
+  /** When set, inject framework-specific simulation scripts into the preview. */
+  framework?: 'html' | 'nuxt' | 'laravel';
 };
 
 /**
@@ -285,8 +287,11 @@ export function buildSrcdoc(
   // it to a per-call option would force iframe srcdoc regeneration (and a
   // visible flash) every time the host toggle flips.
   const withTweaks = injectTweaksBridge(withEdit);
+  const withFramework = options.framework && options.framework !== 'html'
+    ? injectFrameworkBridge(withTweaks, options.framework)
+    : withTweaks;
   return injectSrcdocTransportActivationBridge(
-    injectExportCaptureBridge(injectSnapshotBridge(withTweaks)),
+    injectExportCaptureBridge(injectSnapshotBridge(withFramework)),
   );
 }
 
@@ -1030,6 +1035,644 @@ function escapeAttr(value: string): string {
     .replace(/"/g, '&quot;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
+}
+
+/**
+ * Inject framework-specific simulation scripts into the preview iframe.
+ * Nuxt: hash-based route tracking, click interception for client-side nav,
+ *       route indicator badge, global NuxtLink component registration.
+ * Laravel: Inertia props parsing from root Vue component, mock data generation,
+ *          collapsible debug panel with live prop editing.
+ */
+function injectFrameworkBridge(doc: string, framework: 'nuxt' | 'laravel'): string {
+  const frameworkAttr = `<script data-od-framework-attr>(function(){
+  document.documentElement.setAttribute('data-framework', '${framework}');
+})();</script>`;
+  const script = framework === 'nuxt' ? buildNuxtSimulation() : buildLaravelSimulation();
+  const withAttr = injectAfterHeadOpen(doc, frameworkAttr);
+  return injectBeforeBodyEnd(withAttr, script);
+}
+
+function buildNuxtSimulation(): string {
+  return `<script data-od-framework-simulation>(function(){
+  var currentRoute = window.location.hash.slice(1) || '/';
+  function updateIndicator(){
+    var el = document.getElementById('od-route-indicator');
+    if (el) el.textContent = 'Route: ' + (currentRoute || '/');
+  }
+  var indicator = document.createElement('div');
+  indicator.id = 'od-route-indicator';
+  indicator.textContent = 'Route: ' + (currentRoute || '/');
+  var style = document.createElement('style');
+  style.textContent =
+    '#od-route-indicator{' +
+    'position:fixed;top:8px;right:8px;' +
+    'background:rgba(0,0,0,0.8);color:#00dc82;' +
+    'padding:4px 8px;border-radius:4px;' +
+    'font-size:12px;font-family:monospace;z-index:99999;' +
+    'pointer-events:none;' +
+    '}';
+  document.head.appendChild(style);
+  document.body.appendChild(indicator);
+  document.addEventListener('click', function(e){
+    var link = e.target && e.target.closest && e.target.closest('a[href]');
+    if (!link) return;
+    var href = link.getAttribute('href');
+    if (!href || href.indexOf('http') === 0 || href.indexOf('//') === 0 || href.indexOf('#') === 0) return;
+    e.preventDefault();
+    window.location.hash = href;
+  });
+  window.addEventListener('hashchange', function(){
+    currentRoute = window.location.hash.slice(1) || '/';
+    updateIndicator();
+  });
+  function tryRegisterNuxtLink(){
+    if (typeof Vue !== 'undefined' && Vue.component) {
+      if (!Vue.component('NuxtLink')) {
+        Vue.component('NuxtLink', {
+          props: ['to'],
+          template: '<a :href="to" @click.prevent="navigate"><slot/></a>',
+          methods: {
+            navigate: function(){
+              window.location.hash = this.to;
+            }
+          }
+        });
+      }
+    } else {
+      setTimeout(tryRegisterNuxtLink, 200);
+    }
+  }
+  tryRegisterNuxtLink();
+  console.log('[OD Nuxt] Route simulation active — hash-based navigation enabled');
+})();</script>`;
+}
+
+/**
+ * Smart field name pattern dictionary for contextual mock data generation.
+ * Maps common field name substrings to realistic example values.
+ * Injected as a JS object into the Laravel simulation iframe.
+ */
+const LARAVEL_FIELD_PATTERNS = {
+  email: 'user@example.com',
+  phone: '+1 (555) 012-3456',
+  name: 'John Doe',
+  firstName: 'John',
+  lastName: 'Doe',
+  username: 'johndoe',
+  avatar: 'https://i.pravatar.cc/150?u=john',
+  bio: 'Full-stack developer passionate about clean code.',
+  title: 'Senior Developer',
+  description: 'A brief description of the item.',
+  price: 29.99,
+  amount: 100,
+  quantity: 5,
+  date: '2024-03-15',
+  createdAt: '2024-01-01T00:00:00Z',
+  updatedAt: '2024-03-15T12:00:00Z',
+  url: 'https://example.com',
+  website: 'https://example.com',
+  color: '#3b82f6',
+  status: 'active',
+  type: 'premium',
+  category: 'Technology',
+  tags: ['vue', 'laravel', 'tailwind'],
+  address: '123 Main St, San Francisco, CA 94102',
+  city: 'San Francisco',
+  country: 'United States',
+  zip: '94102',
+  company: 'Acme Inc.',
+  role: 'Administrator',
+  permission: 'read-write',
+  language: 'English',
+  timezone: 'America/New_York',
+  currency: 'USD',
+  locale: 'en_US',
+  theme: 'light',
+  layout: 'grid',
+  sort: 'created_at',
+  limit: 20,
+  page: 1,
+  rating: 4.5,
+  id: 1,
+  uuid: '550e8400-e29b-41d4-a716-446655440000',
+  slug: 'my-post-slug',
+  image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97',
+  logo: 'https://via.placeholder.com/200x200.png?text=Logo',
+  icon: 'ri-star-line',
+};
+
+function buildLaravelSimulation(): string {
+  const patternsJson = JSON.stringify(LARAVEL_FIELD_PATTERNS);
+  return `<script data-od-framework-simulation>(function(){
+  var FIELD_PATTERNS = ${patternsJson};
+  var panelEl = null;
+  var panelExpanded = true;
+  var activeTab = 'data';
+  var pageName = 'Unknown';
+  var originalMockData = {};
+  function deepClone(obj){
+    try { return JSON.parse(JSON.stringify(obj)); } catch(_){ return obj; }
+  }
+  function smartMockValue(key, type){
+    var lower = (key || '').toLowerCase();
+    for (var pattern in FIELD_PATTERNS) {
+      if (lower.indexOf(pattern) >= 0) {
+        var val = FIELD_PATTERNS[pattern];
+        if (Array.isArray(val)) return val.slice();
+        if (typeof val === 'object' && val !== null) return deepClone(val);
+        return val;
+      }
+    }
+    if (type === String || (type && type.name === 'String')) return 'Mock ' + key;
+    if (type === Number || (type && type.name === 'Number')) return 42;
+    if (type === Boolean || (type && type.name === 'Boolean')) return true;
+    if (type === Array || (type && type.name === 'Array')) return [];
+    if (type === Object || (type && type.name === 'Object')) return {};
+    if (type === Date || (type && type.name === 'Date')) return new Date().toISOString().split('T')[0];
+    return 'Mock ' + key;
+  }
+  var panelInlineStyle = document.createElement('style');
+  panelInlineStyle.textContent =
+    '#od-data-panel{' +
+    'position:fixed;bottom:0;left:0;right:0;' +
+    'background:rgba(15,23,42,0.95);color:white;' +
+    'padding:0;font-family:ui-monospace,monospace;font-size:12px;' +
+    'z-index:99999;max-height:320px;display:flex;flex-direction:column;' +
+    'transition:max-height 0.2s ease;border-top:1px solid rgba(255,255,255,0.1);' +
+    '}' +
+    '#od-data-panel.od-collapsed{max-height:36px;overflow:hidden;}' +
+    '#od-data-panel .od-panel-header{' +
+    'display:flex;justify-content:space-between;align-items:center;' +
+    'padding:6px 10px;border-bottom:1px solid rgba(255,255,255,0.1);flex-shrink:0;' +
+    '}' +
+    '#od-data-panel .od-panel-tabs{display:flex;gap:4px;align-items:center;}' +
+    '#od-data-panel .od-panel-tab{' +
+    'background:transparent;border:none;color:rgba(255,255,255,0.6);' +
+    'padding:3px 10px;cursor:pointer;border-radius:4px;font-size:12px;font-family:monospace;' +
+    '}' +
+    '#od-data-panel .od-panel-tab.active{background:rgba(255,255,255,0.1);color:white;}' +
+    '#od-data-panel .od-panel-tab:hover{background:rgba(255,255,255,0.05);}' +
+    '#od-data-panel .od-panel-actions{display:flex;gap:6px;align-items:center;}' +
+    '#od-data-panel .od-panel-btn{' +
+    'background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:white;' +
+    'padding:3px 10px;cursor:pointer;border-radius:4px;font-size:11px;font-family:monospace;' +
+    '}' +
+    '#od-data-panel .od-panel-btn:hover{background:rgba(255,255,255,0.15);}' +
+    '#od-data-panel .od-panel-btn.primary{background:#4ade80;color:#0f172a;border-color:#4ade80;}' +
+    '#od-data-panel .od-panel-btn.primary:hover{background:#22c55e;}' +
+    '#od-data-panel .od-panel-toggle{' +
+    'background:transparent;border:none;color:rgba(255,255,255,0.6);' +
+    'cursor:pointer;padding:2px 6px;font-size:11px;' +
+    '}' +
+    '#od-data-panel .od-panel-toggle:hover{color:white;}' +
+    '#od-data-panel .od-panel-content{' +
+    'flex:1;overflow-y:auto;padding:8px 10px;min-height:0;' +
+    '}' +
+    '#od-data-panel .od-tab-content{display:none;}' +
+    '#od-data-panel .od-tab-content.active{display:block;}' +
+    '#od-data-panel .od-empty{margin:8px 0;color:#94a3b8;font-style:italic;}' +
+    '#od-data-panel .od-data-search{' +
+    'width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);' +
+    'color:white;padding:4px 8px;border-radius:4px;font-family:monospace;font-size:12px;' +
+    'margin-bottom:8px;box-sizing:border-box;' +
+    '}' +
+    '#od-data-panel .od-data-search:focus{outline:none;border-color:rgba(74,222,128,0.5);}' +
+    '#od-data-panel .od-data-field{margin-bottom:6px;}' +
+    '#od-data-panel .od-data-field--nested{' +
+    'margin-left:12px;border-left:1px solid rgba(255,255,255,0.08);padding-left:10px;' +
+    '}' +
+    '#od-data-panel .od-data-field-header{' +
+    'display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;' +
+    '}' +
+    '#od-data-panel .od-data-field-name{color:#4ade80;font-weight:500;font-size:12px;}' +
+    '#od-data-panel .od-data-field-type{color:rgba(255,255,255,0.35);font-size:10px;}' +
+    '#od-data-panel .od-data-field-actions{display:flex;gap:4px;}' +
+    '#od-data-panel .od-data-field-copy{' +
+    'background:transparent;border:none;color:rgba(255,255,255,0.35);cursor:pointer;' +
+    'padding:0 4px;font-size:10px;font-family:monospace;' +
+    '}' +
+    '#od-data-panel .od-data-field-copy:hover{color:#4ade80;}' +
+    '#od-data-panel .od-data-input{' +
+    'width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);' +
+    'color:white;padding:3px 6px;border-radius:3px;font-family:monospace;font-size:12px;' +
+    'box-sizing:border-box;' +
+    '}' +
+    '#od-data-panel .od-data-input:focus{outline:none;border-color:rgba(74,222,128,0.5);}' +
+    '#od-data-panel .od-data-checkbox{' +
+    'display:flex;align-items:center;gap:8px;cursor:pointer;' +
+    '}' +
+    '#od-data-panel .od-data-checkbox input{cursor:pointer;}' +
+    '#od-data-panel .od-data-checkbox span{color:rgba(255,255,255,0.6);}' +
+    '#od-data-panel .od-data-textarea{' +
+    'width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);' +
+    'color:white;padding:3px 6px;border-radius:3px;font-family:monospace;font-size:12px;' +
+    'min-height:48px;resize:vertical;box-sizing:border-box;' +
+    '}' +
+    '#od-data-panel .od-data-textarea:focus{outline:none;border-color:rgba(74,222,128,0.5);}' +
+    '#od-data-panel .od-prop-row{' +
+    'display:flex;gap:8px;margin-bottom:4px;align-items:center;' +
+    '}' +
+    '#od-data-panel .od-prop-row label{min-width:100px;color:#94a3b8;flex-shrink:0;}' +
+    '#od-data-panel .od-prop-row input{' +
+    'flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);' +
+    'color:white;padding:2px 6px;border-radius:2px;font-family:monospace;font-size:12px;' +
+    '}' +
+    '#od-data-panel .od-prop-row input:focus{outline:none;border-color:#4ade80;}' +
+    '#od-inertia-badge{' +
+    'position:fixed;top:8px;right:8px;' +
+    'background:rgba(0,0,0,0.8);color:#f05340;' +
+    'padding:4px 8px;border-radius:4px;' +
+    'font-size:12px;font-family:monospace;z-index:99999;' +
+    'pointer-events:none;' +
+    '}';
+  document.head.appendChild(panelInlineStyle);
+  function escapeHtml(s){
+    return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function escCssStr(s){
+    return String(s).replace(/"/g,'\\\\"').replace(/\\n/g,'\\\\n').replace(/\\r/g,'');
+  }
+  function valStr(v){
+    if (typeof v === 'string') return escapeHtml(v);
+    return escapeHtml(JSON.stringify(v));
+  }
+  function inputTypeForKey(key, val){
+    if (typeof val === 'boolean') return 'checkbox';
+    if (typeof val === 'number') return 'number';
+    if (val === null || val === undefined) return 'text';
+    var k = key.toLowerCase();
+    if (k.indexOf('date') >= 0 || k.indexOf('created') >= 0 || k.indexOf('updated') >= 0 || k.indexOf('timestamp') >= 0) return 'date';
+    if (k.indexOf('color') >= 0 || k.indexOf('colour') >= 0) return 'color';
+    return 'text';
+  }
+  function renderDataTree(data, path, filter){
+    var html = '';
+    var keys = Object.keys(data);
+    var matched = 0;
+    for (var i = 0; i < keys.length; i++){
+      var key = keys[i];
+      var val = data[key];
+      var fieldPath = path ? path + '.' + key : key;
+      if (filter && fieldPath.toLowerCase().indexOf(filter.toLowerCase()) < 0 && key.toLowerCase().indexOf(filter.toLowerCase()) < 0) continue;
+      matched++;
+      if (val !== null && typeof val === 'object' && !Array.isArray(val) && Object.keys(val).length > 0){
+        html +=
+          '<div class="od-data-field">' +
+          '<div class="od-data-field-header">' +
+          '<span class="od-data-field-name">' + escapeHtml(key) + '</span>' +
+          '<div class="od-data-field-actions">' +
+          '<span class="od-data-field-type">Object</span>' +
+          '<button class="od-data-field-copy" data-copy-path="' + fieldPath + '" title="Copy value">C</button>' +
+          '</div></div>' +
+          '<div class="od-data-field--nested">' +
+          renderDataTree(val, fieldPath, filter) +
+          '</div></div>';
+      } else if (Array.isArray(val)){
+        var strVal = JSON.stringify(val, null, 2);
+        html +=
+          '<div class="od-data-field">' +
+          '<div class="od-data-field-header">' +
+          '<span class="od-data-field-name">' + escapeHtml(key) + '</span>' +
+          '<div class="od-data-field-actions">' +
+          '<span class="od-data-field-type">Array[' + val.length + ']</span>' +
+          '<button class="od-data-field-copy" data-copy-path="' + fieldPath + '" title="Copy value">C</button>' +
+          '</div></div>' +
+          '<textarea class="od-data-textarea" data-path="' + fieldPath + '" data-type="json" rows="' + Math.max(2, Math.min(6, val.length + 1)) + '">' + escapeHtml(strVal) + '</textarea>' +
+          '</div>';
+      } else {
+        var inputType = inputTypeForKey(key, val);
+        html +=
+          '<div class="od-data-field">' +
+          '<div class="od-data-field-header">' +
+          '<span class="od-data-field-name">' + escapeHtml(key) + '</span>' +
+          '<div class="od-data-field-actions">' +
+          '<span class="od-data-field-type">' + typeof val + '</span>' +
+          '<button class="od-data-field-copy" data-copy-path="' + fieldPath + '" title="Copy value">C</button>' +
+          '</div></div>';
+        if (inputType === 'checkbox'){
+          html +=
+            '<label class="od-data-checkbox">' +
+            '<input type="checkbox" data-path="' + fieldPath + '" data-type="boolean" ' + (val ? 'checked' : '') + ' />' +
+            '<span>' + (val ? 'true' : 'false') + '</span>' +
+            '</label>';
+        } else if (inputType === 'color'){
+          var colorVal = typeof val === 'string' && val.match(/^#[0-9a-f]{3,8}$/i) ? val : '#3b82f6';
+          html +=
+            '<div style="display:flex;gap:6px;align-items:center">' +
+            '<input type="color" data-path="' + fieldPath + '" data-type="color" value="' + escapeHtml(colorVal) + '" style="width:28px;height:24px;padding:0;border:none;cursor:pointer;background:transparent" />' +
+            '<input type="text" class="od-data-input" data-path="' + fieldPath + '" data-type="color-text" value="' + escapeHtml(String(val)) + '" style="flex:1" />' +
+            '</div>';
+        } else if (inputType === 'date'){
+          var dateVal = typeof val === 'string' ? val.split('T')[0] : '';
+          html += '<input type="date" class="od-data-input" data-path="' + fieldPath + '" data-type="date" value="' + escapeHtml(dateVal) + '" />';
+        } else if (inputType === 'number'){
+          html += '<input type="number" class="od-data-input" data-path="' + fieldPath + '" data-type="number" value="' + escapeHtml(String(val)) + '" step="any" />';
+        } else {
+          html += '<input type="text" class="od-data-input" data-path="' + fieldPath + '" data-type="text" value="' + escapeHtml(String(val)) + '" />';
+        }
+        html += '</div>';
+      }
+    }
+    if (filter && matched === 0) return '';
+    return html;
+  }
+  function renderPropsEditor(props){
+    var hasProps = Object.keys(props).length > 0;
+    if (!hasProps) return '<div class="od-empty">No props defined on root component.</div>';
+    var html = '';
+    for (var key in props) {
+      var val = props[key];
+      var strVal = typeof val === 'string' ? val : JSON.stringify(val);
+      html +=
+        '<div class="od-prop-row">' +
+        '<label>' + escapeHtml(key) + '</label>' +
+        '<input type="text" value="' + escapeHtml(strVal) + '" data-prop="' + escapeHtml(key) + '" />' +
+        '</div>';
+    }
+    return html;
+  }
+  var badge = document.createElement('div');
+  badge.id = 'od-inertia-badge';
+  badge.textContent = 'Inertia Mode — Loading…';
+  document.body.appendChild(badge);
+  function tryReadProps(){
+    var appEl = document.getElementById('app');
+    if (!appEl || !appEl.__vue_app__) return false;
+    try {
+      var vueApp = appEl.__vue_app__;
+      if (!vueApp._instance) return false;
+      var rootType = vueApp._instance.type;
+      var propsDef = (rootType && rootType.props) || {};
+      pageName = (rootType && (rootType.__name || rootType.name)) || 'Unknown';
+      badge.textContent = 'Inertia Mode — Page: ' + pageName;
+      var mockProps = {};
+      var hasProps = false;
+      for (var key in propsDef) {
+        hasProps = true;
+        var def = propsDef[key];
+        var type = (def && def.type) || String;
+        mockProps[key] = smartMockValue(key, type);
+      }
+      originalMockData = deepClone(mockProps);
+      renderPanel(mockProps, rootType, vueApp);
+      storeLiveProps(mockProps, rootType, vueApp);
+      console.log('[OD Laravel] Props simulation active — ' + (hasProps ? Object.keys(propsDef).length + ' prop(s) detected' : 'no props defined'));
+      return true;
+    } catch(e){
+      console.warn('[OD Laravel] Could not read props:', e);
+      return false;
+    }
+  }
+  var mockData = {};
+  var cachedRootType = null;
+  var cachedVueApp = null;
+  function storeLiveProps(props, rootType, vueApp){
+    mockData = props;
+    cachedRootType = rootType;
+    cachedVueApp = vueApp;
+  }
+  function rebuildDataTabContent(filter){
+    var dataContent = panelEl.querySelector('.od-tab-content[data-tab="data"]');
+    if (!dataContent || !mockData) return;
+    var searchVal = filter || '';
+    var treeHtml = renderDataTree(mockData, '', searchVal);
+    if (!treeHtml) treeHtml = '<div class="od-empty">No fields match filter.</div>';
+    var searchHtml =
+      '<input type="text" class="od-data-search" placeholder="Filter fields…" value="' + escapeHtml(searchVal) + '" />';
+    dataContent.innerHTML = searchHtml + treeHtml;
+    var searchInput = dataContent.querySelector('.od-data-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', function(e){
+        rebuildDataTabContent(e.target.value);
+      });
+    }
+    dataContent.querySelectorAll('.od-data-field-copy').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        var path = e.target.getAttribute('data-copy-path');
+        if (!path) return;
+        var parts = path.split('.');
+        var val = mockData;
+        for (var p = 0; p < parts.length; p++) { if (val && val[parts[p]] !== undefined) val = val[parts[p]]; else { val = undefined; break; } }
+        if (val === undefined) return;
+        var text = typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val);
+        try { navigator.clipboard.writeText(text); } catch(_){}
+        btn.textContent = '✓';
+        setTimeout(function(){ btn.textContent = 'C'; }, 1200);
+      });
+    });
+    dataContent.querySelectorAll('.od-data-input, .od-data-textarea').forEach(function(input){
+      input.addEventListener('input', function(e){
+        handleDataInput(e.target);
+      });
+      if (input.type === 'color') {
+        var textInput = input.parentNode && input.parentNode.querySelector('input[type="text"]');
+        if (textInput) {
+          input.addEventListener('input', function(){
+            textInput.value = input.value;
+            handlePathUpdate(input.getAttribute('data-path'), input.value, 'string');
+          });
+          textInput.addEventListener('input', function(){
+            if (/^#[0-9a-f]{6}$/i.test(textInput.value)) { input.value = textInput.value; }
+            handlePathUpdate(textInput.getAttribute('data-path'), textInput.value, 'string');
+          });
+        }
+      }
+    });
+    dataContent.querySelectorAll('.od-data-checkbox input[type="checkbox"]').forEach(function(cb){
+      cb.addEventListener('change', function(e){
+        var path = e.target.getAttribute('data-path');
+        var checked = e.target.checked;
+        var label = e.target.parentNode.querySelector('span');
+        if (label) label.textContent = checked ? 'true' : 'false';
+        handlePathUpdate(path, checked, 'boolean');
+      });
+    });
+  }
+  function handleDataInput(input){
+    var path = input.getAttribute('data-path');
+    var dataType = input.getAttribute('data-type') || 'text';
+    var raw = input.value;
+    if (dataType === 'number') { handlePathUpdate(path, raw === '' ? 0 : Number(raw), 'number'); return; }
+    if (dataType === 'date') { handlePathUpdate(path, raw, 'string'); return; }
+    if (dataType === 'json') {
+      try { var parsed = JSON.parse(raw); handlePathUpdate(path, parsed, 'json'); return; } catch(_){}
+      handlePathUpdate(path, raw, 'string');
+      return;
+    }
+    if (dataType === 'color') { handlePathUpdate(path, raw, 'string'); return; }
+    handlePathUpdate(path, raw, 'string');
+  }
+  function handlePathUpdate(path, value, dataType){
+    if (!path) return;
+    var parts = path.split('.');
+    var current = mockData;
+    for (var p = 0; p < parts.length - 1; p++) {
+      if (current[parts[p]] === undefined || current[parts[p]] === null) return;
+      current = current[parts[p]];
+    }
+    var lastKey = parts[parts.length - 1];
+    current[lastKey] = value;
+    if (cachedRootType && cachedRootType.props && cachedVueApp && cachedVueApp._instance) {
+      var propKey = parts[0];
+      var def = cachedRootType.props[propKey];
+      var expectedType = (def && def.type) || String;
+      var coerced = value;
+      if ((expectedType === Number || expectedType.name === 'Number') && typeof value === 'string') coerced = Number(value);
+      if ((expectedType === Boolean || expectedType.name === 'Boolean')) coerced = value === true || value === 'true';
+      try { cachedVueApp._instance.props[propKey] = coerced; } catch(_) {}
+    }
+  }
+  function renderPanel(props, rootType, vueApp){
+    if (panelEl && panelEl.parentNode) panelEl.parentNode.removeChild(panelEl);
+    panelEl = document.createElement('div');
+    panelEl.id = 'od-data-panel';
+    if (!panelExpanded) panelEl.classList.add('od-collapsed');
+    var hasProps = Object.keys(props).length > 0;
+    var toggleArrow = panelExpanded ? '▼' : '▶';
+    panelEl.innerHTML =
+      '<div class="od-panel-header">' +
+      '<div class="od-panel-tabs">' +
+      '<button class="od-panel-toggle" id="panel-toggle" title="Toggle panel">' + toggleArrow + '</button>' +
+      '<button class="od-panel-tab active" data-tab="data">Data</button>' +
+      '<button class="od-panel-tab" data-tab="props">Props</button>' +
+      '</div>' +
+      '<div class="od-panel-actions">' +
+      '<button class="od-panel-btn" id="reset-data">Reset</button>' +
+      '<button class="od-panel-btn primary" id="export-data">Export JSON</button>' +
+      '</div>' +
+      '</div>' +
+      '<div class="od-panel-content" id="panel-content">' +
+      '<div class="od-tab-content active" data-tab="data"></div>' +
+      '<div class="od-tab-content" data-tab="props">' + renderPropsEditor(props) + '</div>' +
+      '</div>';
+    document.body.appendChild(panelEl);
+    var content = panelEl.querySelector('.od-tab-content[data-tab="data"]');
+    if (content) {
+      var treeHtml = renderDataTree(props, '', '');
+      if (!treeHtml) treeHtml = '<div class="od-empty">No props defined on root component.</div>';
+      var searchHtml = '<input type="text" class="od-data-search" placeholder="Filter fields…" value="" />';
+      content.innerHTML = searchHtml + treeHtml;
+      var searchInput = content.querySelector('.od-data-search');
+      if (searchInput) {
+        searchInput.addEventListener('input', function(e){
+          var val = e.target.value;
+          var tree = content.querySelectorAll('.od-data-field');
+          rebuildDataTabContent(val);
+        });
+      }
+      content.querySelectorAll('.od-data-field-copy').forEach(function(btn){
+        btn.addEventListener('click', function(e){
+          var path = e.target.getAttribute('data-copy-path');
+          if (!path) return;
+          var parts = path.split('.');
+          var val = props;
+          for (var p = 0; p < parts.length; p++) { if (val && val[parts[p]] !== undefined) val = val[parts[p]]; else { val = undefined; break; } }
+          if (val === undefined) return;
+          var text = typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val);
+          try { navigator.clipboard.writeText(text); } catch(_){}
+          btn.textContent = '✓';
+          setTimeout(function(){ btn.textContent = 'C'; }, 1200);
+        });
+      });
+      content.querySelectorAll('.od-data-input, .od-data-textarea').forEach(function(input){
+        input.addEventListener('input', function(e){ handleDataInput(e.target); });
+        if (input.type === 'color') {
+          var textInput = input.parentNode && input.parentNode.querySelector('input[type="text"]');
+          if (textInput) {
+            input.addEventListener('input', function(){ textInput.value = input.value; handlePathUpdate(input.getAttribute('data-path'), input.value, 'string'); });
+            textInput.addEventListener('input', function(){
+              if (/^#[0-9a-f]{6}$/i.test(textInput.value)) { input.value = textInput.value; }
+              handlePathUpdate(textInput.getAttribute('data-path'), textInput.value, 'string');
+            });
+          }
+        }
+      });
+      content.querySelectorAll('.od-data-checkbox input[type="checkbox"]').forEach(function(cb){
+        cb.addEventListener('change', function(e){
+          var path = e.target.getAttribute('data-path');
+          var checked = e.target.checked;
+          var label = e.target.parentNode.querySelector('span');
+          if (label) label.textContent = checked ? 'true' : 'false';
+          handlePathUpdate(path, checked, 'boolean');
+        });
+      });
+    }
+    panelEl.querySelector('#panel-toggle').addEventListener('click', function(){
+      panelExpanded = !panelExpanded;
+      panelEl.classList.toggle('od-collapsed', !panelExpanded);
+      var contentArea = document.getElementById('panel-content');
+      if (contentArea) contentArea.style.display = panelExpanded ? '' : 'none';
+      this.textContent = panelExpanded ? '▼' : '▶';
+    });
+    panelEl.querySelectorAll('.od-panel-tab').forEach(function(tab){
+      tab.addEventListener('click', function(){
+        panelEl.querySelectorAll('.od-panel-tab').forEach(function(t){ t.classList.remove('active'); });
+        panelEl.querySelectorAll('.od-tab-content').forEach(function(c){ c.classList.remove('active'); });
+        tab.classList.add('active');
+        var content = panelEl.querySelector('.od-tab-content[data-tab="' + tab.getAttribute('data-tab') + '"]');
+        if (content) content.classList.add('active');
+      });
+    });
+    panelEl.querySelector('#reset-data').addEventListener('click', function(){
+      if (Object.keys(originalMockData).length === 0) return;
+      var reset = deepClone(originalMockData);
+      for (var k in reset) { mockData[k] = reset[k]; }
+      if (cachedRootType && cachedRootType.props && cachedVueApp && cachedVueApp._instance) {
+        for (var k2 in reset) {
+          var def = cachedRootType.props[k2];
+          var expectedType = (def && def.type) || String;
+          var coerced = reset[k2];
+          if ((expectedType === Number || expectedType.name === 'Number') && typeof coerced === 'string') coerced = Number(coerced);
+          if ((expectedType === Boolean || expectedType.name === 'Boolean')) coerced = coerced === true || coerced === 'true';
+          try { cachedVueApp._instance.props[k2] = coerced; } catch(_) {}
+        }
+      }
+      rebuildDataTabContent('');
+    });
+    panelEl.querySelector('#export-data').addEventListener('click', function(){
+      var json = JSON.stringify(mockData, null, 2);
+      var blob = new Blob([json], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = pageName.toLowerCase().replace(/\\s+/g, '-') + '-mock-data.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+    });
+    panelEl.querySelectorAll('.od-prop-row input').forEach(function(input){
+      input.addEventListener('input', function(e){
+        var inp = e.target;
+        if (!inp.getAttribute || !inp.getAttribute('data-prop')) return;
+        var key = inp.getAttribute('data-prop');
+        var raw = inp.value;
+        var parsed = raw;
+        try { parsed = JSON.parse(raw); } catch(_) {}
+        mockData[key] = parsed;
+        if (cachedRootType && cachedRootType.props) {
+          var def = cachedRootType.props[key];
+          var expectedType = (def && def.type) || String;
+          var coerced = parsed;
+          if ((expectedType === Number || expectedType.name === 'Number') && typeof parsed === 'string') coerced = Number(parsed);
+          if ((expectedType === Boolean || expectedType.name === 'Boolean')) coerced = parsed === true || parsed === 'true';
+          try {
+            if (cachedVueApp && cachedVueApp._instance) {
+              cachedVueApp._instance.props[key] = coerced;
+            }
+          } catch(_) {}
+        }
+      });
+    });
+  }
+  var tries = 0;
+  var pollTimer = setInterval(function(){
+    tries++;
+    if (tryReadProps() || tries > 50) clearInterval(pollTimer);
+  }, 200);
+  setTimeout(function(){ clearInterval(pollTimer); }, 15000);
+})();</script>`;
 }
 
 // Sandboxed iframes (we use `sandbox="allow-scripts"`) without

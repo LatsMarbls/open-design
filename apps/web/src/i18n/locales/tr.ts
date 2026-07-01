@@ -2261,6 +2261,7 @@ export const tr: Dict = {
   'fileViewer.exportJsx': 'JSX olarak dışa aktar',
   'fileViewer.exportReactHtml': 'Önizlemeyi HTML olarak dışa aktar',
   'fileViewer.exportStarted': 'Dışa aktarma başlatıldı',
+    'fileViewer.exportNuxtProject': 'Download as Nuxt Project',     'fileViewer.exportLaravelProject': 'Download as Laravel Project',     'fileViewer.shareMenuFramework': 'Framework Export',     'fileViewer.openInStackBlitz': 'Open in StackBlitz',     'fileViewer.copyFrameworkCode': 'Copy Code to Clipboard',
   'fileViewer.saveAsTemplate': 'Şablon olarak kaydet…',
   'fileViewer.savingTemplate': 'Şablon kaydediliyor…',
   'fileViewer.savedTemplate': '"{name}" olarak kaydedildi',

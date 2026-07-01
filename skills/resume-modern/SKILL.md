@@ -34,6 +34,7 @@ od:
 ---
 
 【模板: 现代极简简历】
+- 单文件 HTML: 在 `<head>` 中加载 `<script src="https://cdn.tailwindcss.com"></script>`; 全部使用 Tailwind 实用类 (`flex`, `gap`, `text-*`, `w-[*]`, `p-*`, `border-*`, `bg-*`, `font-*` 等) 完成样式, 不写自定义 CSS。
 - 容器宽度模拟 A4: `w-[210mm] min-h-[297mm] mx-auto`, 内边距 16-20mm。
 - 顶部姓名巨大 (text-4xl), 底下一行 contact (邮箱 / 电话 / 城市 / GitHub / LinkedIn), 中间用细竖线分隔。
 - 主体两栏可选: 左 60% 主线（经历/项目/教育）, 右 40% 副线（技能/语言/获奖）。

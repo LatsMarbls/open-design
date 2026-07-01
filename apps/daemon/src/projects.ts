@@ -1486,6 +1486,7 @@ const EXT_MIME = {
   '.mp3': 'audio/mpeg',
   '.wav': 'audio/wav',
   '.m4a': 'audio/mp4',
+  '.vue': 'text/x-vue; charset=utf-8',
 };
 
 export function mimeFor(name) {
@@ -1590,6 +1591,7 @@ export function kindFor(name) {
   if (name.endsWith('.sketch.json')) return 'sketch';
   const ext = path.extname(name).toLowerCase();
   if (ext === '.html' || ext === '.htm') return 'html';
+  if (ext === '.vue') return 'code';
   if (ext === '.svg') return 'sketch';
   if (['.png', '.jpg', '.jpeg', '.gif', '.webp', '.avif'].includes(ext)) {
     if (name.startsWith('sketch-')) return 'sketch';

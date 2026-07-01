@@ -57,6 +57,18 @@ To bypass this heuristic, `index.html` MUST load all CDN scripts **dynamically**
 
 **DO NOT** use `vue.global.prod.js` — the prod build lacks the runtime compiler that `vue3-sfc-loader` needs. Always use `vue.global.js`.
 
+### NuxtLink simulation
+
+The OD preview pane injects an automatic Nuxt simulation script when the `Nuxt 3` framework is selected, which provides:
+- **Hash-based route tracking** — click interception on `<a>` tags with internal `href` values switches route via `window.location.hash`
+- **Route indicator** — a small badge in the top-right of the preview showing the current route path
+- **Global `<NuxtLink>` component** — registered on `Vue.component()` so SFC templates using `<NuxtLink to="/...">` work in the preview
+- **Console log** — `[OD Nuxt] Route simulation active` confirms the bridge loaded
+
+You do NOT need to add `<script src>` for Vue Router or write a hash-based router yourself. However, for best results, your SFCs should use `<NuxtLink to="/path">` for navigation, and **DO NOT** add `<script type="module">` or Vue Router CDN scripts — the OD preview bridge handles routing simulation.
+
+When the user selects `Nuxt 3` framework, the preview pane injects the simulation automatically. The generated `app.vue` should use conditional rendering to switch between pages based on the hash-based route (see the `app.vue` section below).
+
 ### Tailwind CSS — Play CDN (no build step)
 
 The preview has no PostCSS or Tailwind CLI. Use the **Tailwind Play CDN** (`https://cdn.tailwindcss.com`) which generates utility CSS in the browser at runtime by scanning the DOM. It uses a `MutationObserver` to pick up new classes as Vue renders components dynamically.
@@ -196,15 +208,36 @@ This file is for the OD preview pane. It loads Vue, `vue3-sfc-loader`, and Tailw
 </html>
 ```
 
-### 2. `app.vue` — Root component
+### 2. `app.vue` — Root component with hash-based routing
 
-For multi-page wireframes, use conditional rendering:
+For multi-page wireframes, read the hash from `window.location.hash` so pages map to routes. The OD preview framework bridge (active when `Nuxt 3` is selected) sets `window.location.hash` when `<NuxtLink>` is clicked.
+
+Use `window.location.hash` as the source of truth for the current page:
+
+```vue
+<script setup>
+import { ref, watch } from 'vue'
+import LoginPage from './pages/login.vue'
+import DashboardPage from './pages/dashboard.vue'
+
+const current = ref(window.location.hash.slice(1) || 'login')
+
+window.addEventListener('hashchange', function () {
+  current.value = window.location.hash.slice(1) || 'login'
+})
+</script>
+
+<template>
+  <LoginPage v-if="current === 'login'" />
+  <DashboardPage v-else-if="current === '/dashboard'" />
+</template>
+```
+
+For simpler single-page wireframes, use a plain `ref` without hash tracking:
 
 ```vue
 <script setup>
 import { ref } from 'vue'
-import LoginPage from './pages/login.vue'
-import DashboardPage from './pages/dashboard.vue'
 
 const current = ref('login')
 </script>

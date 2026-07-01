@@ -49,9 +49,11 @@ import type {
   ResearchOptions,
   RunContextSelection,
   WorkspaceContextItem,
+  TargetFramework,
 } from '@open-design/contracts';
 import { buildVisualAnnotationAttachment, commentTargetDisplayName } from '../comments';
 import { Icon, type IconName } from "./Icon";
+import { FrameworkSelector, readPreferredFramework, writePreferredFramework, frameworkSkillId } from './FrameworkSelector';
 import { ComposerPlusMenu } from './ComposerPlusMenu';
 import { LibraryPicker } from './LibraryPicker';
 import { FigmaImportModal } from './FigmaImportModal';
@@ -301,6 +303,7 @@ export interface ChatComposerHandle {
 
 export interface ChatSendMeta {
   queueOnly?: boolean;
+  framework?: TargetFramework;
   research?: ResearchOptions;
   context?: RunContextSelection;
   appliedPluginSnapshot?: AppliedPluginSnapshot;
@@ -418,6 +421,12 @@ export const ChatComposer = forwardRef<ChatComposerHandle, Props>(
     // Skills the user has @-mentioned for this turn. We dedupe on id and
     // strip the chip when the user removes the corresponding `@<skill>`
     // token from the draft, keeping draft and chips in sync.
+    const [framework, setFramework] = useState<TargetFramework>('html');
+    // Initialise framework from localStorage on first mount. We do this in
+    // an effect (not a useState initializer) so SSR/hydration stays clean.
+    useEffect(() => {
+      setFramework(readPreferredFramework());
+    }, []);
     const [stagedSkills, setStagedSkills] = useState<SkillSummary[]>([]);
     // Legacy standalone design-toolbox popover. The next-step card now renders
     // its own cascading skill menu, so nothing opens this anymore; kept compiling
@@ -994,6 +1003,19 @@ export const ChatComposer = forwardRef<ChatComposerHandle, Props>(
       editorRef.current?.clear();
     }
 
+    function handleFrameworkChange(nextFramework: TargetFramework) {
+      setFramework(nextFramework);
+      writePreferredFramework(nextFramework);
+      // Auto-stage the matching skill when the framework changes.
+      const skillId = frameworkSkillId(nextFramework);
+      if (skillId) {
+        const match = skills.find((s) => s.id === skillId);
+        if (match) {
+          stageSkillForCurrentTurn(match);
+        }
+      }
+    }
+
     function currentCommentAttachments(extra: ChatCommentAttachment[] = []): ChatCommentAttachment[] {
       return sortChatCommentAttachmentsByOrder([...commentAttachments, ...stagedVisualComments, ...extra]);
     }
@@ -1017,6 +1039,7 @@ export const ChatComposer = forwardRef<ChatComposerHandle, Props>(
         ...(workspaceItems.length > 0 ? { workspaceItems } : {}),
       };
       const meta: ChatSendMeta = {
+        framework,
         ...(skillIds.length > 0 ? { skillIds } : {}),
         ...(activeAppliedPlugin
           ? {
@@ -2564,6 +2587,7 @@ export const ChatComposer = forwardRef<ChatComposerHandle, Props>(
                 </div>
               </div>
             ) : null}
+            <FrameworkSelector value={framework} onChange={handleFrameworkChange} />
             {leadingAccessory}
             <span className="composer-spacer" />
             {footerAccessory}

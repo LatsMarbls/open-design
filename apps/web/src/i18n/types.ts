@@ -3026,6 +3026,11 @@ export interface Dict {
   'fileViewer.exportJsx': string;
   'fileViewer.exportReactHtml': string;
   'fileViewer.exportStarted': string;
+  'fileViewer.exportNuxtProject': string;
+  'fileViewer.exportLaravelProject': string;
+  'fileViewer.shareMenuFramework': string;
+  'fileViewer.openInStackBlitz': string;
+  'fileViewer.copyFrameworkCode': string;
   'fileViewer.saveAsTemplate': string;
   'fileViewer.savingTemplate': string;
   'fileViewer.savedTemplate': string;

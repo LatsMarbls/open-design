@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PrimeVue typography</title>
+    <link rel="stylesheet" href="../tokens.css" />
+    <style>
+      body { margin: 0; background: var(--p-surface-ground); color: var(--p-text-color); font-family: var(--p-font-family); }
+      main { max-width: var(--p-container-max); margin: 0 auto; padding: var(--p-spacing-12) var(--p-spacing-6); }
+      h1 { margin: 0 0 var(--p-spacing-8); font-family: var(--p-font-family-display); font-size: var(--p-font-size-3xl); line-height: var(--p-line-height-display); letter-spacing: var(--p-letter-spacing-tight); color: var(--p-text-color); }
+
+      .type-stack { display: grid; gap: var(--p-spacing-6); max-width: 760px; }
+      .display { margin: 0; font-family: var(--p-font-family-display); font-size: var(--p-font-size-5xl); line-height: var(--p-line-height-display); letter-spacing: var(--p-letter-spacing-tight); font-weight: var(--p-font-weight-bold); color: var(--p-text-color); }
+      .heading-xl { margin: 0; font-family: var(--p-font-family-display); font-size: var(--p-font-size-3xl); line-height: var(--p-line-height-display); letter-spacing: var(--p-letter-spacing-tight); font-weight: var(--p-font-weight-semibold); color: var(--p-text-color); }
+      .heading-lg { margin: 0; font-family: var(--p-font-family-display); font-size: var(--p-font-size-2xl); line-height: var(--p-line-height-display); font-weight: var(--p-font-weight-semibold); color: var(--p-text-color); }
+      .heading-md { margin: 0; font-family: var(--p-font-family-display); font-size: var(--p-font-size-xl); line-height: var(--p-line-height-display); font-weight: var(--p-font-weight-semibold); color: var(--p-text-color); }
+      .body-lg { margin: 0; font-size: var(--p-font-size-lg); line-height: var(--p-line-height-base); color: var(--p-text-color); }
+      .body-base { margin: 0; font-size: var(--p-font-size-base); line-height: var(--p-line-height-base); color: var(--p-text-color); }
+      .body-sm { margin: 0; font-size: var(--p-font-size-sm); line-height: var(--p-line-height-base); color: var(--p-text-color); }
+      .caption { margin: 0; font-size: var(--p-font-size-caption); line-height: var(--p-line-height-base); color: var(--p-text-secondary-color); }
+
+      .eyebrow { margin: 0; font-family: var(--p-font-family-display); font-size: var(--p-font-size-sm); font-weight: var(--p-font-weight-medium); letter-spacing: var(--p-letter-spacing-wide); text-transform: uppercase; color: var(--p-primary-color); }
+
+      .section { margin-block-end: var(--p-spacing-4); padding-block-end: var(--p-spacing-2); border-bottom: 1px solid var(--p-border-soft-color); font-family: var(--p-font-family-display); font-size: var(--p-font-size-base); font-weight: var(--p-font-weight-semibold); color: var(--p-text-color); }
+
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Typography</h1>
+
+      <section class="type-stack">
+        <p class="eyebrow">PrimeVue Aura · Modern & Minimal</p>
+        <p class="display">Display sample for PrimeVue</p>
+        <p class="heading-xl">Heading XL — Section title</p>
+        <p class="heading-lg">Heading LG — Card title</p>
+        <p class="heading-md">Heading MD — Subsection heading</p>
+        <p class="body-lg">Body large — Featured paragraph text that introduces key concepts and sets the rhythm for a longer reading experience.</p>
+        <p class="body-base">Body base — The standard paragraph text used for general content across the application. This is the most common type size and should feel comfortable for extended reading sessions.</p>
+        <p class="body-sm">Body small — Secondary text, helper copy, and metadata that supports the primary content without competing for attention.</p>
+        <p class="caption">Caption — Timestamps, footnotes, and legal text that is present but unobtrusive.</p>
+      </section>
+
+    </main>
+  </body>
+</html>

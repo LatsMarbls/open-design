@@ -1,0 +1,1363 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PrimeVue — reference components</title>
+    <meta
+      name="description"
+      content="Reference fixture for design-systems/primevue. Every visible
+        value comes from tokens.css; the page itself follows PrimeVue Aura
+        rules — indigo primary, slate neutrals, 6px default radius, Inter
+        body text, Material-inspired elevation, 4px spacing base."
+    />
+
+    <style>
+      /* :root paste — sourced verbatim from design-systems/primevue/tokens.css. */
+      :root {
+        --p-surface-0: #ffffff;
+        --p-surface-50: #f8fafc;
+        --p-surface-100: #f1f5f9;
+        --p-surface-200: #e2e8f0;
+        --p-surface-300: #cbd5e1;
+        --p-surface-400: #94a3b8;
+        --p-surface-500: #64748b;
+        --p-surface-600: #475569;
+        --p-surface-700: #334155;
+        --p-surface-800: #1e293b;
+        --p-surface-900: #0f172a;
+        --p-surface-ground: var(--p-surface-50);
+        --p-surface-section: var(--p-surface-100);
+        --p-surface-card: var(--p-surface-0);
+        --p-surface-overlay: var(--p-surface-0);
+
+        --p-primary-50: #eef2ff;
+        --p-primary-100: #e0e7ff;
+        --p-primary-200: #c7d2fe;
+        --p-primary-300: #a5b4fc;
+        --p-primary-400: #818cf8;
+        --p-primary-500: #6366f1;
+        --p-primary-600: #4f46e5;
+        --p-primary-700: #4338ca;
+        --p-primary-800: #3730a3;
+        --p-primary-900: #312e81;
+        --p-primary-color: var(--p-primary-500);
+        --p-primary-contrast-color: #ffffff;
+        --p-primary-hover-color: var(--p-primary-600);
+        --p-primary-active-color: var(--p-primary-700);
+
+        --p-text-color: #334155;
+        --p-text-secondary-color: #64748b;
+        --p-text-placeholder-color: #94a3b8;
+        --p-text-muted-color: #94a3b8;
+
+        --p-info-color: #3b82f6;
+        --p-success-color: #22c55e;
+        --p-warn-color: #f59e0b;
+        --p-danger-color: #ef4444;
+
+        --p-border-color: #cbd5e1;
+        --p-border-soft-color: #e2e8f0;
+        --p-border-radius-none: 0px;
+        --p-border-radius-xs: 2px;
+        --p-border-radius-sm: 4px;
+        --p-border-radius-md: 6px;
+        --p-border-radius-lg: 8px;
+        --p-border-radius-xl: 12px;
+        --p-border-radius-pill: 9999px;
+
+        --p-font-family: "Inter", -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --p-font-family-display: "Inter", -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --p-font-family-mono: "JetBrains Mono", ui-monospace, "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+
+        --p-font-size-caption: 12px;
+        --p-font-size-sm: 14px;
+        --p-font-size-base: 16px;
+        --p-font-size-lg: 18px;
+        --p-font-size-xl: 20px;
+        --p-font-size-2xl: 24px;
+        --p-font-size-3xl: 32px;
+        --p-font-size-4xl: 40px;
+        --p-font-size-5xl: 48px;
+        --p-font-weight-light: 300;
+        --p-font-weight-normal: 400;
+        --p-font-weight-medium: 500;
+        --p-font-weight-semibold: 600;
+        --p-font-weight-bold: 700;
+        --p-line-height-sm: 1.25;
+        --p-line-height-base: 1.5;
+        --p-line-height-lg: 1.75;
+        --p-line-height-display: 1.2;
+
+        --p-spacing-1: 4px;
+        --p-spacing-2: 8px;
+        --p-spacing-3: 12px;
+        --p-spacing-4: 16px;
+        --p-spacing-5: 20px;
+        --p-spacing-6: 24px;
+        --p-spacing-8: 32px;
+        --p-spacing-10: 40px;
+        --p-spacing-12: 48px;
+
+        --p-section-y-desktop: 96px;
+        --p-section-y-tablet: 64px;
+        --p-section-y-phone: 48px;
+        --p-container-max: 1280px;
+        --p-container-gutter-desktop: 24px;
+        --p-container-gutter-tablet: 16px;
+        --p-container-gutter-phone: 16px;
+
+        --p-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --p-shadow-md: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+        --p-shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        --p-shadow-xl: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        --p-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        --p-shadow-none: none;
+
+        --p-focus-ring-width: 2px;
+        --p-focus-ring-style: solid;
+        --p-focus-ring-color: var(--p-primary-500);
+        --p-focus-ring-offset: 2px;
+        --p-focus-ring-offset-color: #ffffff;
+        --p-focus-ring: 0 0 0 var(--p-focus-ring-width) var(--p-focus-ring-offset-color),
+                         0 0 0 calc(var(--p-focus-ring-width) + var(--p-focus-ring-offset)) var(--p-focus-ring-color);
+
+        --p-transition-duration: 150ms;
+        --p-transition-duration-fast: 100ms;
+        --p-transition-duration-slow: 250ms;
+        --p-easing-standard: cubic-bezier(0.05, 0.7, 0.1, 1);
+      }
+
+      /* ─── Reset ──────────────────────────────────────────────── */
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        background: var(--p-surface-ground);
+        color: var(--p-text-color);
+        font-family: var(--p-font-family);
+        font-size: var(--p-font-size-base);
+        line-height: var(--p-line-height-base);
+        font-weight: var(--p-font-weight-normal);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      /* ─── Layout ────────────────────────────────────────────── */
+      .container {
+        max-width: var(--p-container-max);
+        margin-inline: auto;
+        padding-inline: var(--p-container-gutter-desktop);
+      }
+      section {
+        padding-block: var(--p-section-y-desktop);
+      }
+      section + section {
+        border-top: 1px solid var(--p-border-soft-color);
+      }
+      @media (max-width: 1023px) {
+        .container { padding-inline: var(--p-container-gutter-tablet); }
+        section { padding-block: var(--p-section-y-tablet); }
+      }
+      @media (max-width: 639px) {
+        .container { padding-inline: var(--p-container-gutter-phone); }
+        section { padding-block: var(--p-section-y-phone); }
+      }
+
+      /* ─── Typography ────────────────────────────────────────── */
+      h1, h2, h3, h4 {
+        font-family: var(--p-font-family-display);
+        line-height: var(--p-line-height-display);
+        margin: 0;
+        color: var(--p-text-color);
+      }
+      h1 { font-size: var(--p-font-size-3xl); font-weight: var(--p-font-weight-bold); }
+      h2 { font-size: var(--p-font-size-2xl); font-weight: var(--p-font-weight-semibold); }
+      h3 { font-size: var(--p-font-size-xl); font-weight: var(--p-font-weight-semibold); }
+      p { margin: 0; }
+
+      .eyebrow {
+        font-family: var(--p-font-family-display);
+        font-size: var(--p-font-size-sm);
+        font-weight: var(--p-font-weight-medium);
+        line-height: 1;
+        color: var(--p-primary-color);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-block-end: var(--p-spacing-3);
+      }
+
+      .stack-3 > * + * { margin-block-start: var(--p-spacing-3); }
+      .stack-4 > * + * { margin-block-start: var(--p-spacing-4); }
+      .stack-6 > * + * { margin-block-start: var(--p-spacing-6); }
+      .icon { width: 16px; height: 16px; flex-shrink: 0; }
+
+      /* ─── Button ────────────────────────────────────────────── */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--p-spacing-2);
+        padding: 8px 16px;
+        border: 1px solid transparent;
+        border-radius: var(--p-border-radius-md);
+        font-family: var(--p-font-family);
+        font-size: var(--p-font-size-sm);
+        font-weight: var(--p-font-weight-medium);
+        line-height: 1.43;
+        cursor: pointer;
+        text-decoration: none;
+        background: transparent;
+        color: inherit;
+        transition:
+          background-color var(--p-transition-duration) var(--p-easing-standard),
+          border-color var(--p-transition-duration) var(--p-easing-standard),
+          color var(--p-transition-duration) var(--p-easing-standard),
+          box-shadow var(--p-transition-duration) var(--p-easing-standard);
+      }
+      .btn:focus-visible {
+        outline: none;
+        box-shadow: var(--p-focus-ring);
+      }
+      .btn-primary {
+        background: var(--p-primary-color);
+        color: var(--p-primary-contrast-color);
+        border-color: var(--p-primary-color);
+      }
+      .btn-primary:hover {
+        background: var(--p-primary-hover-color);
+        border-color: var(--p-primary-hover-color);
+      }
+      .btn-primary:active {
+        background: var(--p-primary-active-color);
+        border-color: var(--p-primary-active-color);
+      }
+      .btn-secondary {
+        background: var(--p-surface-card);
+        color: var(--p-text-color);
+        border-color: var(--p-border-color);
+      }
+      .btn-secondary:hover {
+        background: var(--p-surface-100);
+      }
+      .btn-outlined {
+        background: transparent;
+        color: var(--p-primary-color);
+        border-color: var(--p-primary-300);
+      }
+      .btn-outlined:hover {
+        background: var(--p-primary-50);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--p-text-secondary-color);
+        border-color: transparent;
+      }
+      .btn-ghost:hover {
+        background: var(--p-surface-100);
+        color: var(--p-text-color);
+      }
+      .btn-rounded {
+        border-radius: var(--p-border-radius-pill);
+      }
+      .btn-sm {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+      .btn-lg {
+        padding: 12px 20px;
+        font-size: var(--p-font-size-base);
+      }
+      .btn-raised {
+        box-shadow: var(--p-shadow-sm);
+      }
+
+      /* ─── InputText ─────────────────────────────────────────── */
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: var(--p-spacing-2);
+      }
+      .field label {
+        font-size: var(--p-font-size-sm);
+        font-weight: var(--p-font-weight-medium);
+        color: var(--p-text-color);
+      }
+      .field input {
+        padding: 8px 12px;
+        border: 1px solid var(--p-border-color);
+        border-radius: var(--p-border-radius-md);
+        background: var(--p-surface-card);
+        color: var(--p-text-color);
+        font-family: inherit;
+        font-size: var(--p-font-size-sm);
+        line-height: 1.43;
+        outline: none;
+        transition:
+          border-color var(--p-transition-duration) var(--p-easing-standard),
+          box-shadow var(--p-transition-duration) var(--p-easing-standard);
+      }
+      .field input::placeholder { color: var(--p-text-placeholder-color); }
+      .field input:hover { border-color: var(--p-primary-color); }
+      .field input:focus-visible {
+        border-color: var(--p-primary-color);
+        box-shadow: var(--p-focus-ring);
+      }
+      .field input.input-invalid {
+        border-color: var(--p-danger-color);
+      }
+      .field-help {
+        font-size: var(--p-font-size-caption);
+        color: var(--p-text-secondary-color);
+      }
+      .field-error {
+        font-size: var(--p-font-size-caption);
+        color: var(--p-danger-color);
+      }
+
+      /* ─── Card ──────────────────────────────────────────────── */
+      .card {
+        background: var(--p-surface-card);
+        border: 1px solid var(--p-border-soft-color);
+        border-radius: var(--p-border-radius-lg);
+        padding: var(--p-spacing-6);
+        display: flex;
+        flex-direction: column;
+        gap: var(--p-spacing-4);
+        box-shadow: var(--p-shadow-sm);
+        transition:
+          border-color var(--p-transition-duration) var(--p-easing-standard),
+          box-shadow var(--p-transition-duration) var(--p-easing-standard);
+      }
+      .card:hover {
+        box-shadow: var(--p-shadow-md);
+      }
+      .card-title {
+        font-size: var(--p-font-size-xl);
+        font-weight: var(--p-font-weight-semibold);
+        color: var(--p-text-color);
+        margin: 0;
+      }
+      .card-subtitle {
+        font-size: var(--p-font-size-sm);
+        color: var(--p-text-secondary-color);
+        margin: 0;
+      }
+
+      /* ─── Dialog (modal overlay pattern) ────────────────────── */
+      .dialog-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+      .dialog {
+        background: var(--p-surface-overlay);
+        border-radius: var(--p-border-radius-xl);
+        box-shadow: var(--p-shadow-2xl);
+        max-width: 600px;
+        min-width: 300px;
+        width: 100%;
+        margin: var(--p-spacing-4);
+      }
+      .dialog-header {
+        padding: 24px 24px 0;
+        font-size: var(--p-font-size-xl);
+        font-weight: var(--p-font-weight-semibold);
+        color: var(--p-text-color);
+      }
+      .dialog-content {
+        padding: 24px;
+        color: var(--p-text-color);
+      }
+      .dialog-footer {
+        padding: 0 24px 24px;
+        display: flex;
+        gap: var(--p-spacing-3);
+        justify-content: flex-end;
+      }
+
+      /* ─── Dropdown mock ─────────────────────────────────────── */
+      .dropdown-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 12px;
+        border: 1px solid var(--p-border-color);
+        border-radius: var(--p-border-radius-md);
+        background: var(--p-surface-card);
+        color: var(--p-text-color);
+        font-size: var(--p-font-size-sm);
+        cursor: pointer;
+        min-width: 200px;
+        transition: border-color var(--p-transition-duration) var(--p-easing-standard);
+      }
+      .dropdown-trigger:hover {
+        border-color: var(--p-primary-color);
+      }
+      .dropdown-trigger:focus-visible {
+        outline: none;
+        box-shadow: var(--p-focus-ring);
+      }
+      .dropdown-panel {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 200px;
+        background: var(--p-surface-overlay);
+        border-radius: var(--p-border-radius-lg);
+        box-shadow: var(--p-shadow-lg);
+        padding: 4px;
+        margin-block-start: 4px;
+        z-index: 100;
+      }
+      .dropdown-wrapper {
+        position: relative;
+        display: inline-block;
+      }
+      .dropdown-wrapper:hover .dropdown-panel,
+      .dropdown-wrapper:focus-within .dropdown-panel {
+        display: block;
+      }
+      .dropdown-item {
+        padding: 10px 12px;
+        border-radius: var(--p-border-radius-md);
+        color: var(--p-text-color);
+        font-size: var(--p-font-size-sm);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: var(--p-spacing-2);
+        transition: background-color var(--p-transition-duration) var(--p-easing-standard);
+      }
+      .dropdown-item:hover {
+        background: var(--p-surface-100);
+      }
+      .dropdown-item.selected {
+        background: var(--p-primary-50);
+        color: var(--p-primary-700);
+      }
+
+      /* ─── Checkbox ──────────────────────────────────────────── */
+      .checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        gap: var(--p-spacing-2);
+        cursor: pointer;
+        font-size: var(--p-font-size-sm);
+        color: var(--p-text-color);
+      }
+      .checkbox-box {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--p-border-color);
+        border-radius: var(--p-border-radius-xs);
+        background: var(--p-surface-card);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          background-color var(--p-transition-duration) var(--p-easing-standard),
+          border-color var(--p-transition-duration) var(--p-easing-standard);
+      }
+      .checkbox-wrapper:hover .checkbox-box {
+        border-color: var(--p-primary-color);
+      }
+      .checkbox-wrapper input:checked + .checkbox-box {
+        background: var(--p-primary-color);
+        border-color: var(--p-primary-color);
+      }
+      .checkbox-wrapper input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .checkbox-wrapper input:focus-visible + .checkbox-box {
+        box-shadow: var(--p-focus-ring);
+      }
+      .checkbox-check {
+        color: var(--p-primary-contrast-color);
+        font-size: 12px;
+        line-height: 1;
+        display: none;
+      }
+      .checkbox-wrapper input:checked + .checkbox-box .checkbox-check {
+        display: block;
+      }
+
+      /* ─── RadioButton ───────────────────────────────────────── */
+      .radiobtn-wrapper {
+        display: flex;
+        align-items: center;
+        gap: var(--p-spacing-2);
+        cursor: pointer;
+        font-size: var(--p-font-size-sm);
+        color: var(--p-text-color);
+      }
+      .radiobtn-circle {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--p-border-color);
+        border-radius: 50%;
+        background: var(--p-surface-card);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          border-color var(--p-transition-duration) var(--p-easing-standard);
+      }
+      .radiobtn-wrapper:hover .radiobtn-circle {
+        border-color: var(--p-primary-color);
+      }
+      .radiobtn-wrapper input:checked + .radiobtn-circle {
+        border-color: var(--p-primary-color);
+      }
+      .radiobtn-wrapper input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .radiobtn-wrapper input:focus-visible + .radiobtn-circle {
+        box-shadow: var(--p-focus-ring);
+      }
+      .radiobtn-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--p-primary-color);
+        display: none;
+      }
+      .radiobtn-wrapper input:checked + .radiobtn-circle .radiobtn-dot {
+        display: block;
+      }
+
+      /* ─── Badge ─────────────────────────────────────────────── */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--p-spacing-1);
+        padding: 2px 8px;
+        border-radius: var(--p-border-radius-pill);
+        font-size: var(--p-font-size-caption);
+        font-weight: var(--p-font-weight-medium);
+        line-height: 1.5;
+        min-width: 20px;
+        min-height: 20px;
+        justify-content: center;
+        font-family: var(--p-font-family);
+      }
+      .badge-primary {
+        background: var(--p-primary-color);
+        color: var(--p-primary-contrast-color);
+      }
+      .badge-success {
+        background: var(--p-success-color);
+        color: #ffffff;
+      }
+      .badge-info {
+        background: var(--p-info-color);
+        color: #ffffff;
+      }
+      .badge-warn {
+        background: var(--p-warn-color);
+        color: #ffffff;
+      }
+      .badge-danger {
+        background: var(--p-danger-color);
+        color: #ffffff;
+      }
+      .badge-lg {
+        font-size: 14px;
+        padding: 4px 10px;
+        min-width: 24px;
+        min-height: 24px;
+      }
+      .badge-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+
+      /* ─── Chip ──────────────────────────────────────────────── */
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--p-spacing-2);
+        padding: 4px 10px;
+        border-radius: var(--p-border-radius-pill);
+        background: var(--p-surface-100);
+        color: var(--p-text-color);
+        font-size: var(--p-font-size-sm);
+        cursor: default;
+      }
+      .chip-remove {
+        width: 14px;
+        height: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--p-text-secondary-color);
+        cursor: pointer;
+        border-radius: 50%;
+        line-height: 1;
+        font-size: 14px;
+      }
+      .chip-remove:hover {
+        color: var(--p-text-color);
+      }
+      .chip-image {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--p-primary-200);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--p-primary-700);
+        font-size: var(--p-font-size-sm);
+        font-weight: var(--p-font-weight-medium);
+      }
+
+      /* ─── Menu ──────────────────────────────────────────────── */
+      .menu {
+        background: var(--p-surface-overlay);
+        border-radius: var(--p-border-radius-lg);
+        box-shadow: var(--p-shadow-lg);
+        padding: 4px;
+        display: inline-flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 180px;
+      }
+      .menu-item {
+        display: flex;
+        align-items: center;
+        gap: var(--p-spacing-3);
+        padding: 10px 12px;
+        border-radius: var(--p-border-radius-md);
+        color: var(--p-text-color);
+        font-size: var(--p-font-size-sm);
+        cursor: pointer;
+        transition: background-color var(--p-transition-duration) var(--p-easing-standard);
+      }
+      .menu-item:hover {
+        background: var(--p-surface-100);
+      }
+      .menu-item.selected {
+        background: var(--p-primary-50);
+        color: var(--p-primary-700);
+      }
+      .menu-item-icon {
+        width: 16px;
+        height: 16px;
+        color: var(--p-text-secondary-color);
+        flex-shrink: 0;
+      }
+      .menu-separator {
+        height: 1px;
+        background: var(--p-border-soft-color);
+        margin: 4px 0;
+      }
+
+      /* ─── DataTable ─────────────────────────────────────────── */
+      .datatable {
+        background: var(--p-surface-card);
+        border: 1px solid var(--p-border-soft-color);
+        border-radius: var(--p-border-radius-lg);
+        overflow: hidden;
+        box-shadow: var(--p-shadow-sm);
+        width: 100%;
+      }
+      .datatable table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .datatable th {
+        background: var(--p-surface-50);
+        color: var(--p-text-color);
+        font-size: var(--p-font-size-sm);
+        font-weight: var(--p-font-weight-semibold);
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid var(--p-border-soft-color);
+      }
+      .datatable td {
+        padding: 12px 16px;
+        font-size: var(--p-font-size-sm);
+        color: var(--p-text-color);
+        border-bottom: 1px solid var(--p-border-soft-color);
+      }
+      .datatable tr:last-child td {
+        border-bottom: none;
+      }
+      .datatable tr:hover td {
+        background: var(--p-surface-50);
+      }
+      .datatable tr:nth-child(even) td {
+        background: var(--p-surface-50);
+      }
+      .datatable tr:nth-child(even):hover td {
+        background: var(--p-surface-100);
+      }
+
+      /* ─── Panel ─────────────────────────────────────────────── */
+      .panel {
+        background: var(--p-surface-card);
+        border: 1px solid var(--p-border-soft-color);
+        border-radius: var(--p-border-radius-lg);
+        box-shadow: var(--p-shadow-sm);
+        overflow: hidden;
+      }
+      .panel-header {
+        background: var(--p-surface-50);
+        color: var(--p-text-color);
+        padding: 16px 20px;
+        font-size: var(--p-font-size-base);
+        font-weight: var(--p-font-weight-semibold);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .panel-content {
+        padding: 20px;
+        color: var(--p-text-color);
+      }
+
+      /* ─── Accordion ─────────────────────────────────────────── */
+      .accordion {
+        background: var(--p-surface-card);
+        border: 1px solid var(--p-border-soft-color);
+        border-radius: var(--p-border-radius-lg);
+        overflow: hidden;
+      }
+      .accordion-tab {
+        border-bottom: 1px solid var(--p-border-soft-color);
+      }
+      .accordion-tab:last-child {
+        border-bottom: none;
+      }
+      .accordion-header {
+        padding: 14px 16px;
+        font-size: var(--p-font-size-base);
+        font-weight: var(--p-font-weight-medium);
+        color: var(--p-text-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        background: var(--p-surface-card);
+        transition:
+          background-color var(--p-transition-duration) var(--p-easing-standard),
+          color var(--p-transition-duration) var(--p-easing-standard);
+      }
+      .accordion-header:hover {
+        background: var(--p-surface-100);
+      }
+      .accordion-header.active {
+        background: var(--p-primary-50);
+        color: var(--p-primary-700);
+      }
+      .accordion-content {
+        padding: 16px;
+        color: var(--p-text-color);
+        display: none;
+      }
+      .accordion-content.open {
+        display: block;
+      }
+      .accordion-toggle {
+        color: var(--p-text-secondary-color);
+        transition: transform var(--p-transition-duration) var(--p-easing-standard);
+      }
+      .accordion-header.active .accordion-toggle {
+        transform: rotate(180deg);
+      }
+
+      /* ─── Tabs ──────────────────────────────────────────────── */
+      .tabs {
+        background: transparent;
+      }
+      .tab-nav {
+        display: flex;
+        border-bottom: 1px solid var(--p-border-soft-color);
+        gap: 0;
+      }
+      .tab-item {
+        padding: 12px 16px;
+        font-size: var(--p-font-size-sm);
+        font-weight: var(--p-font-weight-medium);
+        color: var(--p-text-secondary-color);
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition:
+          color var(--p-transition-duration) var(--p-easing-standard),
+          border-color var(--p-transition-duration) var(--p-easing-standard);
+      }
+      .tab-item:hover {
+        color: var(--p-text-color);
+      }
+      .tab-item.active {
+        color: var(--p-primary-color);
+        border-bottom-color: var(--p-primary-color);
+        font-weight: var(--p-font-weight-semibold);
+      }
+      .tab-panel {
+        padding: 16px 0;
+        color: var(--p-text-color);
+      }
+
+      /* ─── Message ───────────────────────────────────────────── */
+      .message {
+        display: flex;
+        align-items: center;
+        gap: var(--p-spacing-3);
+        padding: 12px 16px;
+        border-radius: var(--p-border-radius-md);
+        font-size: var(--p-font-size-sm);
+        border: 1px solid;
+      }
+      .message-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+      .message-info {
+        background: #eff6ff;
+        color: #1e40af;
+        border-color: #bfdbfe;
+      }
+      .message-success {
+        background: #f0fdf4;
+        color: #166534;
+        border-color: #bbf7d0;
+      }
+      .message-warn {
+        background: #fffbeb;
+        color: #92400e;
+        border-color: #fde68a;
+      }
+      .message-danger {
+        background: #fef2f2;
+        color: #991b1b;
+        border-color: #fecaca;
+      }
+
+      /* ─── Toast ─────────────────────────────────────────────── */
+      .toast {
+        background: var(--p-surface-overlay);
+        color: var(--p-text-color);
+        border-radius: var(--p-border-radius-lg);
+        box-shadow: var(--p-shadow-xl);
+        padding: 16px;
+        display: flex;
+        gap: var(--p-spacing-3);
+        max-width: 360px;
+        position: relative;
+      }
+      .toast-icon {
+        width: 22px;
+        height: 22px;
+        flex-shrink: 0;
+      }
+      .toast-icon-info { color: var(--p-info-color); }
+      .toast-icon-success { color: var(--p-success-color); }
+      .toast-icon-warn { color: var(--p-warn-color); }
+      .toast-icon-danger { color: var(--p-danger-color); }
+      .toast-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: var(--p-spacing-1);
+      }
+      .toast-title {
+        font-size: var(--p-font-size-base);
+        font-weight: var(--p-font-weight-semibold);
+      }
+      .toast-detail {
+        font-size: var(--p-font-size-sm);
+        color: var(--p-text-secondary-color);
+      }
+      .toast-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 16px;
+        height: 16px;
+        color: var(--p-text-secondary-color);
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+        line-height: 1;
+      }
+      .toast-close:hover {
+        color: var(--p-text-color);
+      }
+
+      /* ─── Section-specific layouts ──────────────────────────── */
+      .hero {
+        text-align: left;
+      }
+      .hero h1 { max-width: 22ch; margin-block-end: var(--p-spacing-4); }
+      .hero .lede {
+        max-width: 56ch;
+        font-size: var(--p-font-size-lg);
+        line-height: var(--p-line-height-base);
+        color: var(--p-text-secondary-color);
+      }
+      .hero-actions {
+        display: flex;
+        gap: var(--p-spacing-3);
+        margin-block-start: var(--p-spacing-8);
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .hero-meta {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--p-spacing-3);
+        margin-block-start: var(--p-spacing-6);
+        color: var(--p-text-secondary-color);
+        font-size: var(--p-font-size-sm);
+        flex-wrap: wrap;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--p-spacing-5);
+        margin-block-start: var(--p-spacing-8);
+      }
+      @media (max-width: 1023px) {
+        .features-grid { grid-template-columns: 1fr 1fr; }
+      }
+      @media (max-width: 639px) {
+        .features-grid { grid-template-columns: 1fr; }
+      }
+
+      .feature-icon {
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--p-border-soft-color);
+        border-radius: var(--p-border-radius-md);
+        color: var(--p-primary-color);
+        background: var(--p-primary-50);
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: var(--p-spacing-12);
+        align-items: start;
+        margin-block-start: var(--p-spacing-8);
+      }
+      @media (max-width: 1023px) {
+        .form-row { grid-template-columns: 1fr; }
+      }
+
+      .form-card {
+        display: flex;
+        flex-direction: column;
+        gap: var(--p-spacing-4);
+        max-width: 440px;
+        padding: var(--p-spacing-6);
+        background: var(--p-surface-card);
+        border: 1px solid var(--p-border-soft-color);
+        border-radius: var(--p-border-radius-lg);
+        box-shadow: var(--p-shadow-sm);
+      }
+      .form-actions {
+        display: flex;
+        gap: var(--p-spacing-3);
+        margin-block-start: var(--p-spacing-2);
+        align-items: center;
+      }
+
+      .components-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: var(--p-spacing-6);
+        margin-block-start: var(--p-spacing-6);
+      }
+      .component-card {
+        background: var(--p-surface-card);
+        border: 1px solid var(--p-border-soft-color);
+        border-radius: var(--p-border-radius-lg);
+        padding: var(--p-spacing-5);
+        box-shadow: var(--p-shadow-sm);
+      }
+      .component-card h3 {
+        font-size: var(--p-font-size-base);
+        font-weight: var(--p-font-weight-semibold);
+        color: var(--p-text-color);
+        margin-block-end: var(--p-spacing-4);
+        padding-block-end: var(--p-spacing-3);
+        border-bottom: 1px solid var(--p-border-soft-color);
+      }
+      .component-card .row-flex {
+        display: flex;
+        gap: var(--p-spacing-2);
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .component-card .block-label {
+        font-size: var(--p-font-size-caption);
+        color: var(--p-text-secondary-color);
+        margin-block-end: var(--p-spacing-2);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <!-- ════════════════════════════════════════════════════════════════
+           HERO
+      ═══════════════════════════════════════════════════════════════ -->
+      <section class="hero" data-od-id="hero">
+        <p class="eyebrow">v1.0 · reference fixture · PrimeVue</p>
+        <h1>Vue 3 component library.</h1>
+        <p class="lede">
+          Rich, accessible, themeable components for Vue 3 — powered by
+          an indigo primary palette, slate neutral system, and Material-
+          inspired elevation. This fixture paints from the same
+          <code style="font-family: var(--p-font-family-mono); font-size: 0.95em">:root</code>
+          block every PrimeVue artifact uses.
+        </p>
+        <div class="hero-actions">
+          <a href="./tokens.css" class="btn btn-primary btn-raised">
+            Get started
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </a>
+          <a href="./DESIGN.md" class="btn btn-outlined">Browse components</a>
+          <a href="#install" class="btn btn-ghost">npm install primevue</a>
+        </div>
+        <p class="hero-meta">
+          <span class="badge badge-primary">66 tokens</span>
+          <span class="badge badge-info">MIT license</span>
+          <span>Vue 3 · Aura theme</span>
+        </p>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════════════════
+           COMPONENT GALLERY
+      ═══════════════════════════════════════════════════════════════ -->
+      <section data-od-id="components">
+        <p class="eyebrow">Component inventory</p>
+        <h2 style="max-width: 28ch">PrimeVue Aura component tokens in action.</h2>
+
+        <div class="components-grid">
+
+          <!-- Buttons -->
+          <div class="component-card" data-od-id="button">
+            <h3>Button</h3>
+            <div class="block-label">Variants</div>
+            <div class="row-flex" style="margin-block-end: var(--p-spacing-3)">
+              <button type="button" class="btn btn-primary btn-raised">Primary</button>
+              <button type="button" class="btn btn-secondary">Secondary</button>
+              <button type="button" class="btn btn-outlined">Outlined</button>
+              <button type="button" class="btn btn-ghost">Ghost</button>
+            </div>
+            <div class="block-label">Sizes</div>
+            <div class="row-flex" style="margin-block-end: var(--p-spacing-3)">
+              <button type="button" class="btn btn-primary btn-sm">Small</button>
+              <button type="button" class="btn btn-primary">Default</button>
+              <button type="button" class="btn btn-primary btn-lg">Large</button>
+            </div>
+            <div class="block-label">Shapes</div>
+            <div class="row-flex">
+              <button type="button" class="btn btn-primary btn-rounded btn-raised">Rounded</button>
+            </div>
+          </div>
+
+          <!-- InputText -->
+          <div class="component-card" data-od-id="inputtext">
+            <h3>InputText</h3>
+            <div class="field">
+              <label for="demo-name">Name</label>
+              <input id="demo-name" type="text" placeholder="Enter your name" />
+            </div>
+            <div class="field" style="margin-block-start: var(--p-spacing-3)">
+              <label for="demo-email">Email with error</label>
+              <input id="demo-email" type="email" class="input-invalid" placeholder="you@example.com" />
+              <span class="field-error">Please enter a valid email address.</span>
+            </div>
+          </div>
+
+          <!-- Card -->
+          <div class="component-card" data-od-id="card">
+            <h3>Card</h3>
+            <div class="card" style="padding: var(--p-spacing-4); gap: var(--p-spacing-3)">
+              <div class="card-title">Card Title</div>
+              <div class="card-subtitle">Optional subtitle for additional context.</div>
+              <p style="font-size: var(--p-font-size-sm); color: var(--p-text-secondary-color);">
+                Card body content with descriptive text that explains the purpose of this card component.
+              </p>
+              <div class="row-flex">
+                <button type="button" class="btn btn-primary btn-sm">Action</button>
+                <button type="button" class="btn btn-ghost btn-sm">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Checkbox -->
+          <div class="component-card" data-od-id="checkbox">
+            <h3>Checkbox</h3>
+            <label class="checkbox-wrapper">
+              <input type="checkbox" checked />
+              <span class="checkbox-box">
+                <span class="checkbox-check">✓</span>
+              </span>
+              Checked option
+            </label>
+            <label class="checkbox-wrapper" style="margin-block-start: var(--p-spacing-2)">
+              <input type="checkbox" />
+              <span class="checkbox-box">
+                <span class="checkbox-check">✓</span>
+              </span>
+              Unchecked option
+            </label>
+          </div>
+
+          <!-- RadioButton -->
+          <div class="component-card" data-od-id="radiobutton">
+            <h3>RadioButton</h3>
+            <label class="radiobtn-wrapper">
+              <input type="radio" name="demo-radio" checked />
+              <span class="radiobtn-circle"><span class="radiobtn-dot"></span></span>
+              Option A
+            </label>
+            <label class="radiobtn-wrapper" style="margin-block-start: var(--p-spacing-2)">
+              <input type="radio" name="demo-radio" />
+              <span class="radiobtn-circle"><span class="radiobtn-dot"></span></span>
+              Option B
+            </label>
+          </div>
+
+          <!-- Badge -->
+          <div class="component-card" data-od-id="badge">
+            <h3>Badge</h3>
+            <div class="block-label">Variants</div>
+            <div class="row-flex" style="margin-block-end: var(--p-spacing-3)">
+              <span class="badge badge-primary">Primary</span>
+              <span class="badge badge-success">Success</span>
+              <span class="badge badge-info">Info</span>
+              <span class="badge badge-warn">Warn</span>
+              <span class="badge badge-danger">Danger</span>
+            </div>
+            <div class="block-label">Sizes</div>
+            <div class="row-flex">
+              <span class="badge badge-primary">Default</span>
+              <span class="badge badge-primary badge-lg">Large</span>
+            </div>
+          </div>
+
+          <!-- Chip -->
+          <div class="component-card" data-od-id="chip">
+            <h3>Chip</h3>
+            <div class="block-label">Default</div>
+            <div class="row-flex" style="margin-block-end: var(--p-spacing-3)">
+              <span class="chip">
+                <span class="chip-image">AL</span>
+                Amy Leaver
+                <span class="chip-remove" aria-label="remove">✕</span>
+              </span>
+              <span class="chip">
+                Vue.js
+                <span class="chip-remove" aria-label="remove">✕</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Dropdown -->
+          <div class="component-card" data-od-id="dropdown">
+            <h3>Dropdown</h3>
+            <div class="dropdown-wrapper">
+              <div class="dropdown-trigger" tabindex="0">
+                <span>Select a city</span>
+                <span style="color: var(--p-text-secondary-color)">▼</span>
+              </div>
+              <div class="dropdown-panel">
+                <div class="dropdown-item selected">New York</div>
+                <div class="dropdown-item">San Francisco</div>
+                <div class="dropdown-item">London</div>
+                <div class="dropdown-item">Tokyo</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Menu -->
+          <div class="component-card" data-od-id="menu">
+            <h3>Menu</h3>
+            <nav class="menu">
+              <div class="menu-item selected">
+                <svg class="menu-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                Dashboard
+              </div>
+              <div class="menu-item">
+                <svg class="menu-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                Analytics
+              </div>
+              <div class="menu-separator"></div>
+              <div class="menu-item">
+                <svg class="menu-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Settings
+              </div>
+            </nav>
+          </div>
+
+          <!-- DataTable -->
+          <div class="component-card" data-od-id="datatable" style="grid-column: 1 / -1">
+            <h3>DataTable</h3>
+            <div class="datatable">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Alice Johnson</td>
+                    <td>Designer</td>
+                    <td><span class="badge badge-success badge-dot" style="display: inline-flex; gap: var(--p-spacing-1); align-items: center">Active</span></td>
+                    <td><button type="button" class="btn btn-ghost btn-sm">Edit</button></td>
+                  </tr>
+                  <tr>
+                    <td>Bob Chen</td>
+                    <td>Developer</td>
+                    <td><span class="badge badge-warn" style="font-size: 10px">Pending</span></td>
+                    <td><button type="button" class="btn btn-ghost btn-sm">Edit</button></td>
+                  </tr>
+                  <tr>
+                    <td>Carol Davis</td>
+                    <td>Manager</td>
+                    <td><span class="badge badge-primary" style="font-size: 10px">Active</span></td>
+                    <td><button type="button" class="btn btn-ghost btn-sm">Edit</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Panel -->
+          <div class="component-card" data-od-id="panel">
+            <h3>Panel</h3>
+            <div class="panel">
+              <div class="panel-header">
+                <span>Panel Header</span>
+                <span style="color: var(--p-text-secondary-color); font-size: var(--p-font-size-sm)">▼</span>
+              </div>
+              <div class="panel-content">
+                Panel content with descriptive text that explains the purpose and use of this component.
+              </div>
+            </div>
+          </div>
+
+          <!-- Accordion -->
+          <div class="component-card" data-od-id="accordion">
+            <h3>Accordion</h3>
+            <div class="accordion">
+              <div class="accordion-tab">
+                <div class="accordion-header active">
+                  <span>What is PrimeVue?</span>
+                  <span class="accordion-toggle">▼</span>
+                </div>
+                <div class="accordion-content open">
+                  PrimeVue is a rich set of open-source UI components for Vue 3.
+                </div>
+              </div>
+              <div class="accordion-tab">
+                <div class="accordion-header">
+                  <span>What is the Aura theme?</span>
+                  <span class="accordion-toggle">▼</span>
+                </div>
+                <div class="accordion-content">
+                  Aura is PrimeVue's modern default theme with indigo primary and slate neutrals.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="component-card" data-od-id="tabs">
+            <h3>Tabs</h3>
+            <div class="tabs">
+              <nav class="tab-nav">
+                <span class="tab-item active">Dashboard</span>
+                <span class="tab-item">Settings</span>
+                <span class="tab-item">Profile</span>
+              </nav>
+              <div class="tab-panel">
+                Dashboard content with key metrics and data visualization.
+              </div>
+            </div>
+          </div>
+
+          <!-- Message -->
+          <div class="component-card" data-od-id="message">
+            <h3>Message</h3>
+            <div class="stack-3">
+              <div class="message message-info">
+                <svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                This is an informational message.
+              </div>
+              <div class="message message-success">
+                <svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+                Your changes were saved successfully.
+              </div>
+              <div class="message message-warn">
+                <svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+                Your session will expire soon.
+              </div>
+              <div class="message message-danger">
+                <svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+                An error occurred while processing your request.
+              </div>
+            </div>
+          </div>
+
+          <!-- Toast -->
+          <div class="component-card" data-od-id="toast">
+            <h3>Toast</h3>
+            <div class="stack-3">
+              <div class="toast">
+                <svg class="toast-icon toast-icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+                <div class="toast-body">
+                  <div class="toast-title">Success</div>
+                  <div class="toast-detail">Your changes were saved.</div>
+                </div>
+                <button class="toast-close" aria-label="close">✕</button>
+              </div>
+              <div class="toast">
+                <svg class="toast-icon toast-icon-danger" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+                <div class="toast-body">
+                  <div class="toast-title">Error</div>
+                  <div class="toast-detail">Failed to save. Please try again.</div>
+                </div>
+                <button class="toast-close" aria-label="close">✕</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

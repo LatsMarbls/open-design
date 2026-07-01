@@ -2261,6 +2261,7 @@ export const zhCN: Dict = {
   'fileViewer.exportJsx': '导出为 JSX',
   'fileViewer.exportReactHtml': '导出预览 HTML',
   'fileViewer.exportStarted': '已开始导出',
+    'fileViewer.exportNuxtProject': 'Download as Nuxt Project',     'fileViewer.exportLaravelProject': 'Download as Laravel Project',     'fileViewer.shareMenuFramework': 'Framework Export',     'fileViewer.openInStackBlitz': 'Open in StackBlitz',     'fileViewer.copyFrameworkCode': 'Copy Code to Clipboard',
   'fileViewer.saveAsTemplate': '保存为模板…',
   'fileViewer.savingTemplate': '正在保存模板…',
   'fileViewer.savedTemplate': '已保存为「{name}」',

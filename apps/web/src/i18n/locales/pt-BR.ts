@@ -2261,6 +2261,7 @@ export const ptBR: Dict = {
   'fileViewer.exportJsx': 'Exportar como JSX',
   'fileViewer.exportReactHtml': 'Exportar prévia como HTML',
   'fileViewer.exportStarted': 'Exportação iniciada',
+    'fileViewer.exportNuxtProject': 'Download as Nuxt Project',     'fileViewer.exportLaravelProject': 'Download as Laravel Project',     'fileViewer.shareMenuFramework': 'Framework Export',     'fileViewer.openInStackBlitz': 'Open in StackBlitz',     'fileViewer.copyFrameworkCode': 'Copy Code to Clipboard',
   'fileViewer.saveAsTemplate': 'Salvar como template…',
   'fileViewer.savingTemplate': 'Salvando template…',
   'fileViewer.savedTemplate': 'Salvo como "{name}"',

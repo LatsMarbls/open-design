@@ -15,6 +15,7 @@ export * from './api/connectionTest.js';
 export * from './api/export.js';
 export * from './api/files.js';
 export * from './api/figma.js';
+export * from './api/framework.js';
 export * from './api/host-tools.js';
 export * from './api/finalize.js';
 export * from './api/github.js';

@@ -1466,3 +1466,276 @@ export async function exportArtifactAsPdf(
   }
   triggerDownload(pdf.output('blob'), filename);
 }
+
+// ===========================================================================
+// Framework-specific project exports (Nuxt, Laravel)
+// ===========================================================================
+
+export interface ExportFileEntry {
+  path: string;
+  content: string;
+}
+
+function buildNuxtPackageJson(title: string): string {
+  const packageJson = {
+    name: title.toLowerCase().replace(/\s+/g, '-'),
+    private: true,
+    type: 'module',
+    scripts: {
+      build: 'nuxt build',
+      dev: 'nuxt dev',
+      generate: 'nuxt generate',
+      preview: 'nuxt preview',
+      postinstall: 'nuxt prepare',
+    },
+    dependencies: {
+      nuxt: '^3.11.0',
+      vue: '^3.4.21',
+      'vue-router': '^4.3.0',
+    },
+    devDependencies: {
+      '@nuxtjs/tailwindcss': '^6.11.4',
+      typescript: '^5.4.2',
+    },
+  };
+  return JSON.stringify(packageJson, null, 2);
+}
+
+function buildNuxtConfig(): string {
+  return `// https://nuxt.com/docs/api/configuration/nuxt-config
+export default defineNuxtConfig({
+  devtools: { enabled: true },
+  css: ['~/assets/css/main.css'],
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
+});
+`;
+}
+
+function buildNuxtAppVue(): string {
+  return `<template>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
+</template>
+`;
+}
+
+function buildNuxtReadme(title: string): string {
+  return `# ${title}
+
+## Setup
+
+\`\`\`bash
+npm install
+\`\`\`
+
+## Development
+
+\`\`\`bash
+npm run dev
+\`\`\`
+
+## Build
+
+\`\`\`bash
+npm run build
+\`\`\`
+
+## Generate Static Site
+
+\`\`\`bash
+npm run generate
+\`\`\`
+`;
+}
+
+function buildLaravelPackageJson(title: string): string {
+  const packageJson = {
+    name: title.toLowerCase().replace(/\s+/g, '-'),
+    private: true,
+    type: 'module',
+    scripts: {
+      dev: 'vite',
+      build: 'vite build',
+      preview: 'vite preview',
+    },
+    dependencies: {
+      vue: '^3.4.21',
+      '@inertiajs/vue3': '^1.0.16',
+    },
+    devDependencies: {
+      '@vitejs/plugin-vue': '^5.0.4',
+      'laravel-vite-plugin': '^1.0.2',
+      vite: '^5.1.5',
+      tailwindcss: '^3.4.1',
+      autoprefixer: '^10.4.17',
+      postcss: '^8.4.35',
+    },
+  };
+  return JSON.stringify(packageJson, null, 2);
+}
+
+function buildLaravelRoutes(): string {
+  return `<?php
+
+use Illuminate\\Support\\Facades\\Route;
+use Inertia\\Inertia;
+
+Route::get('/', function () {
+    return Inertia::render('Index');
+});
+
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+});
+
+// Add your Inertia routes here
+// Route::get('/{feature}', function (string $feature) {
+//     return Inertia::render(ucfirst($feature));
+// })->where('feature', '[a-zA-Z]+');
+`;
+}
+
+function buildLaravelReadme(title: string): string {
+  return `# ${title}
+
+## Setup
+
+1. Copy the \`resources/\` directory into your Laravel project.
+2. Copy \`routes/web.php\` into your Laravel routes directory.
+3. Install the frontend dependencies:
+
+\`\`\`bash
+npm install
+\`\`\`
+
+4. Build the assets:
+
+\`\`\`bash
+npm run dev
+\`\`\`
+
+## Routes
+
+See \`routes/web.php\` for example Inertia route definitions.
+
+## Resources
+
+- \`resources/js/App.vue\` — Root Vue component with Inertia setup
+- \`resources/js/Pages/\` — Inertia page components
+- \`resources/js/Components/\` — Reusable Vue components
+- \`resources/js/Layouts/\` — Layout components
+- \`resources/css/app.css\` — Application styles
+`;
+}
+
+export async function exportAsNuxtProject(
+  files: ExportFileEntry[],
+  title: string,
+): Promise<void> {
+  const slug = safeFilename(title, 'nuxt-project');
+  const allFiles: ExportFileEntry[] = [
+    { path: 'package.json', content: buildNuxtPackageJson(title) },
+    { path: 'nuxt.config.ts', content: buildNuxtConfig() },
+    { path: 'app.vue', content: buildNuxtAppVue() },
+    { path: 'README.md', content: buildNuxtReadme(title) },
+    { path: 'assets/css/main.css', content: '@tailwind base;\n@tailwind components;\n@tailwind utilities;\n' },
+    { path: 'layouts/default.vue', content: '<template>\n  <div>\n    <slot />\n  </div>\n</template>\n' },
+    { path: 'pages/index.vue', content: '<template>\n  <div>\n    <h1>Welcome</h1>\n  </div>\n</template>\n' },
+    ...files,
+  ];
+
+  const blob = buildZip(allFiles);
+  triggerDownload(blob, `${slug}-nuxt.zip`);
+}
+
+export async function exportAsLaravelProject(
+  files: ExportFileEntry[],
+  title: string,
+): Promise<void> {
+  const slug = safeFilename(title, 'laravel-project');
+  const allFiles: ExportFileEntry[] = [
+    { path: 'package.json', content: buildLaravelPackageJson(title) },
+    { path: 'routes/web.php', content: buildLaravelRoutes() },
+    { path: 'README.md', content: buildLaravelReadme(title) },
+    { path: 'resources/js/App.vue', content: '<template>\n  <div>\n    <inertia-head>\n      <title>Laravel</title>\n      <meta head-key="description" name="description" content="Laravel + Inertia app" />\n    </inertia-head>\n    <div class="app-shell">\n      <slot />\n    </div>\n  </div>\n</template>\n\n<script setup>\nimport { createInertiaApp } from \'@inertiajs/vue3\';\nimport { createApp, h } from \'vue\';\n</script>\n' },
+    { path: 'resources/js/Layouts/AppLayout.vue', content: '<template>\n  <div class="app-layout">\n    <nav class="app-nav">\n      <inertia-link href="/">Home</inertia-link>\n      <inertia-link href="/dashboard">Dashboard</inertia-link>\n    </nav>\n    <main class="app-main">\n      <slot />\n    </main>\n  </div>\n</template>\n\n<style scoped>\n.app-layout { min-height: 100vh; }\n.app-nav { display: flex; gap: 1rem; padding: 1rem; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }\n.app-main { padding: 2rem; }\n</style>\n' },
+    { path: 'resources/css/app.css', content: '@tailwind base;\n@tailwind components;\n@tailwind utilities;\n' },
+    ...files,
+  ];
+
+  const blob = buildZip(allFiles);
+  triggerDownload(blob, `${slug}-laravel.zip`);
+}
+
+export async function openInStackBlitz(
+  files: ExportFileEntry[],
+  framework: 'html' | 'nuxt' | 'laravel',
+): Promise<void> {
+  const projectFiles: Record<string, string> = {};
+  for (const f of files) {
+    projectFiles[f.path] = f.content;
+  }
+
+  const project = {
+    files: projectFiles,
+    title: framework === 'nuxt' ? 'Nuxt 3 Project' : framework === 'laravel' ? 'Laravel + Inertia' : 'HTML Project',
+    description: 'Generated by Open Design',
+    template: framework === 'nuxt' ? 'node' : framework === 'laravel' ? 'node' : 'html',
+  };
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Opening in StackBlitz...</title>
+  <script src="https://unpkg.com/@stackblitz/sdk@1/bundles/sdk.umd.js"></script>
+</head>
+<body>
+  <p>Opening StackBlitz...</p>
+  <script>
+    var project = ${JSON.stringify(project)};
+    StackBlitzSDK.openProject(project, {
+      openFile: Object.keys(project.files)[0] || 'index.html',
+      newWindow: true,
+    });
+  </script>
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank', 'noopener');
+}
+
+export async function copyFrameworkCode(
+  files: ExportFileEntry[],
+  framework: 'html' | 'nuxt' | 'laravel',
+): Promise<void> {
+  const divider = '='.repeat(80);
+  const formatted = files
+    .map((f) => {
+      const lang = f.path.endsWith('.vue')
+        ? 'vue'
+        : f.path.endsWith('.ts') || f.path.endsWith('.tsx')
+          ? 'typescript'
+          : f.path.endsWith('.php')
+            ? 'php'
+            : f.path.endsWith('.css')
+              ? 'css'
+              : f.path.endsWith('.json')
+                ? 'json'
+                : f.path.endsWith('.md')
+                  ? 'markdown'
+                  : 'text';
+      return `${divider}\n# File: ${f.path}\n\`\`\`${lang}\n${f.content}\n\`\`\``;
+    })
+    .join('\n\n');
+
+  await navigator.clipboard.writeText(formatted);
+}

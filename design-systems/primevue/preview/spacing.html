@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PrimeVue spacing</title>
+    <link rel="stylesheet" href="../tokens.css" />
+    <style>
+      body { margin: 0; background: var(--p-surface-ground); color: var(--p-text-color); font-family: var(--p-font-family); }
+      main { max-width: var(--p-container-max); margin: 0 auto; padding: var(--p-spacing-12) var(--p-spacing-6); }
+      h1 { margin: 0 0 var(--p-spacing-8); font-family: var(--p-font-family-display); font-size: var(--p-font-size-3xl); line-height: var(--p-line-height-display); letter-spacing: var(--p-letter-spacing-tight); }
+      h2 { margin: 0 0 var(--p-spacing-4); font-family: var(--p-font-family-display); font-size: var(--p-font-size-xl); }
+
+      .section { margin-block-end: var(--p-spacing-10); }
+      .stack { display: grid; gap: var(--p-spacing-3); margin-bottom: var(--p-spacing-8); }
+      .row { display: grid; grid-template-columns: 160px 1fr; align-items: center; gap: var(--p-spacing-4); color: var(--p-text-secondary-color); font-size: var(--p-font-size-sm); }
+      .bar { height: var(--p-spacing-4); min-width: 2px; background: var(--p-primary-color); border-radius: var(--p-border-radius-sm); }
+
+      .radii { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--p-spacing-4); }
+      .radii article { min-height: 88px; display: grid; place-items: center; border: 1px solid var(--p-border-color); background: var(--p-surface-card); color: var(--p-text-secondary-color); font-size: var(--p-font-size-sm); box-shadow: var(--p-shadow-sm); }
+
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Spacing and radius</h1>
+
+      <section class="section">
+        <h2>Spacing scale (4px base)</h2>
+        <div class="stack">
+          <div class="row"><span>--p-spacing-1 (4px)</span><div class="bar" style="width: var(--p-spacing-1)"></div></div>
+          <div class="row"><span>--p-spacing-2 (8px)</span><div class="bar" style="width: var(--p-spacing-2)"></div></div>
+          <div class="row"><span>--p-spacing-3 (12px)</span><div class="bar" style="width: var(--p-spacing-3)"></div></div>
+          <div class="row"><span>--p-spacing-4 (16px)</span><div class="bar" style="width: var(--p-spacing-4)"></div></div>
+          <div class="row"><span>--p-spacing-5 (20px)</span><div class="bar" style="width: var(--p-spacing-5)"></div></div>
+          <div class="row"><span>--p-spacing-6 (24px)</span><div class="bar" style="width: var(--p-spacing-6)"></div></div>
+          <div class="row"><span>--p-spacing-8 (32px)</span><div class="bar" style="width: var(--p-spacing-8)"></div></div>
+          <div class="row"><span>--p-spacing-10 (40px)</span><div class="bar" style="width: var(--p-spacing-10)"></div></div>
+          <div class="row"><span>--p-spacing-12 (48px)</span><div class="bar" style="width: var(--p-spacing-12)"></div></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Border radius</h2>
+        <div class="radii">
+          <article style="border-radius: var(--p-border-radius-none)">--none (0)</article>
+          <article style="border-radius: var(--p-border-radius-xs)">--xs (2px)</article>
+          <article style="border-radius: var(--p-border-radius-sm)">--sm (4px)</article>
+          <article style="border-radius: var(--p-border-radius-md)">--md (6px)</article>
+          <article style="border-radius: var(--p-border-radius-lg)">--lg (8px)</article>
+          <article style="border-radius: var(--p-border-radius-xl)">--xl (12px)</article>
+          <article style="border-radius: var(--p-border-radius-pill)">--pill (9999px)</article>
+        </div>
+      </section>
+
+    </main>
+  </body>
+</html>

@@ -2261,6 +2261,7 @@ export const pl: Dict = {
   'fileViewer.exportJsx': 'Eksportuj jako JSX',
   'fileViewer.exportReactHtml': 'Eksportuj podgląd jako HTML',
   'fileViewer.exportStarted': 'Rozpoczęto eksport',
+    'fileViewer.exportNuxtProject': 'Download as Nuxt Project',     'fileViewer.exportLaravelProject': 'Download as Laravel Project',     'fileViewer.shareMenuFramework': 'Framework Export',     'fileViewer.openInStackBlitz': 'Open in StackBlitz',     'fileViewer.copyFrameworkCode': 'Copy Code to Clipboard',
   'fileViewer.saveAsTemplate': 'Zapisz jako szablon…',
   'fileViewer.savingTemplate': 'Zapisywanie szablonu…',
   'fileViewer.savedTemplate': 'Zapisano jako „{name}”',

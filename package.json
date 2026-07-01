@@ -11,6 +11,8 @@
   },
   "scripts": {
     "postinstall": "node ./scripts/postinstall.mjs",
+    "start": "node start.mjs",
+    "start:daemon": "node apps/daemon/dist/cli.js --port 7456",
     "tools-dev": "pnpm exec tools-dev",
     "tools-pack": "pnpm exec tools-pack",
     "tools-release": "pnpm exec tools-release",

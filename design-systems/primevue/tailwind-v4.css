@@ -1,0 +1,115 @@
+/* Derived from tokens.css. Keep tokens.css as the source of truth. */
+@import "tailwindcss";
+@import "./tokens.css";
+
+@theme {
+  --color-surface-0: var(--p-surface-0);
+  --color-surface-50: var(--p-surface-50);
+  --color-surface-100: var(--p-surface-100);
+  --color-surface-200: var(--p-surface-200);
+  --color-surface-300: var(--p-surface-300);
+  --color-surface-400: var(--p-surface-400);
+  --color-surface-500: var(--p-surface-500);
+  --color-surface-600: var(--p-surface-600);
+  --color-surface-700: var(--p-surface-700);
+  --color-surface-800: var(--p-surface-800);
+  --color-surface-900: var(--p-surface-900);
+
+  --color-primary-50: var(--p-primary-50);
+  --color-primary-100: var(--p-primary-100);
+  --color-primary-200: var(--p-primary-200);
+  --color-primary-300: var(--p-primary-300);
+  --color-primary-400: var(--p-primary-400);
+  --color-primary-500: var(--p-primary-500);
+  --color-primary-600: var(--p-primary-600);
+  --color-primary-700: var(--p-primary-700);
+  --color-primary-800: var(--p-primary-800);
+  --color-primary-900: var(--p-primary-900);
+
+  --color-primary: var(--p-primary-color);
+  --color-primary-contrast: var(--p-primary-contrast-color);
+  --color-surface-ground: var(--p-surface-ground);
+  --color-surface-card: var(--p-surface-card);
+  --color-surface-overlay: var(--p-surface-overlay);
+
+  --color-text: var(--p-text-color);
+  --color-text-secondary: var(--p-text-secondary-color);
+  --color-text-muted: var(--p-text-muted-color);
+  --color-border: var(--p-border-color);
+  --color-border-soft: var(--p-border-soft-color);
+
+  --color-info: var(--p-info-color);
+  --color-success: var(--p-success-color);
+  --color-warn: var(--p-warn-color);
+  --color-danger: var(--p-danger-color);
+
+  --font-sans: var(--p-font-family);
+  --font-display: var(--p-font-family-display);
+  --font-mono: var(--p-font-family-mono);
+
+  --text-caption: var(--p-font-size-caption);
+  --text-xs: var(--p-font-size-caption);
+  --text-sm: var(--p-font-size-sm);
+  --text-base: var(--p-font-size-base);
+  --text-lg: var(--p-font-size-lg);
+  --text-xl: var(--p-font-size-xl);
+  --text-2xl: var(--p-font-size-2xl);
+  --text-3xl: var(--p-font-size-3xl);
+  --text-4xl: var(--p-font-size-4xl);
+  --text-5xl: var(--p-font-size-5xl);
+
+  --font-weight-light: var(--p-font-weight-light);
+  --font-weight-normal: var(--p-font-weight-normal);
+  --font-weight-medium: var(--p-font-weight-medium);
+  --font-weight-semibold: var(--p-font-weight-semibold);
+  --font-weight-bold: var(--p-font-weight-bold);
+
+  --leading-sm: var(--p-line-height-sm);
+  --leading-base: var(--p-line-height-base);
+  --leading-lg: var(--p-line-height-lg);
+  --leading-display: var(--p-line-height-display);
+
+  --tracking-tight: var(--p-letter-spacing-tight);
+  --tracking-normal: var(--p-letter-spacing-normal);
+  --tracking-wide: var(--p-letter-spacing-wide);
+
+  --spacing-1: var(--p-spacing-1);
+  --spacing-2: var(--p-spacing-2);
+  --spacing-3: var(--p-spacing-3);
+  --spacing-4: var(--p-spacing-4);
+  --spacing-5: var(--p-spacing-5);
+  --spacing-6: var(--p-spacing-6);
+  --spacing-8: var(--p-spacing-8);
+  --spacing-10: var(--p-spacing-10);
+  --spacing-12: var(--p-spacing-12);
+  --spacing-section-desktop: var(--p-section-y-desktop);
+  --spacing-section-tablet: var(--p-section-y-tablet);
+  --spacing-section-phone: var(--p-section-y-phone);
+
+  --radius-none: var(--p-border-radius-none);
+  --radius-xs: var(--p-border-radius-xs);
+  --radius-sm: var(--p-border-radius-sm);
+  --radius-md: var(--p-border-radius-md);
+  --radius-lg: var(--p-border-radius-lg);
+  --radius-xl: var(--p-border-radius-xl);
+  --radius-pill: var(--p-border-radius-pill);
+
+  --shadow-sm: var(--p-shadow-sm);
+  --shadow-md: var(--p-shadow-md);
+  --shadow-lg: var(--p-shadow-lg);
+  --shadow-xl: var(--p-shadow-xl);
+  --shadow-2xl: var(--p-shadow-2xl);
+  --shadow-none: var(--p-shadow-none);
+  --shadow-focus-ring: var(--p-focus-ring);
+
+  --duration-fast: var(--p-transition-duration-fast);
+  --duration-base: var(--p-transition-duration);
+  --duration-slow: var(--p-transition-duration-slow);
+  --ease-standard: var(--p-easing-standard);
+  --ease-emphasized: var(--p-easing-emphasized);
+
+  --container-max: var(--p-container-max);
+  --spacing-container-desktop: var(--p-container-gutter-desktop);
+  --spacing-container-tablet: var(--p-container-gutter-tablet);
+  --spacing-container-phone: var(--p-container-gutter-phone);
+}

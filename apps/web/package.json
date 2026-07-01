@@ -32,6 +32,9 @@
     "@formkit/auto-animate": "0.9.0",
     "@lexical/react": "0.36.2",
     "@lexical/utils": "0.36.2",
+    "@open-design/ai-blocks": "workspace:*",
+    "@open-design/blocks": "workspace:*",
+    "@open-design/codegen": "workspace:*",
     "@open-design/components": "workspace:*",
     "@open-design/contracts": "workspace:*",
     "@open-design/host": "workspace:*",
@@ -49,7 +52,8 @@
     "posthog-js": "1.374.2",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "shiki": "4.1.0"
+    "shiki": "4.1.0",
+    "zustand": "5.0.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.3.0",

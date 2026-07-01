@@ -33,6 +33,7 @@ od:
 ---
 
 【模板: 营销海报】
+- 单文件 HTML: 在 `<head>` 中加载 `<script src="https://cdn.tailwindcss.com"></script>`; 全部使用 Tailwind 实用类 (`w-[*]`, `h-[*]`, `mx-auto`, `flex`, `text-*`, `font-*`, `bg-gradient-*`, `from-*`, `via-*`, `to-*`, `p-*`, `gap-*`, `justify-*`, `items-*` 等) 完成样式, 不写自定义 CSS。
 - 容器 `w-[1080px] h-[1920px] mx-auto`, 全屏渐变 / mesh 背景。
 - 上部 30% 留白 + 一个大 emoji 或抽象几何图形。
 - 中部主标题占视觉中心 (text-8xl, font-black), 一句话副标题。

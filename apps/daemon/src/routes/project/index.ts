@@ -2273,13 +2273,37 @@ export function registerProjectFileRoutes(app: Express, ctx: RegisterProjectFile
   // Preflight for the raw file route. Current artifact fetches are simple GETs
   // (no preflight needed), but an explicit handler future-proofs the route if
   // artifacts ever add custom request headers.
-  app.options(/^\/api\/projects\/([^/]+)\/raw\/(.+)$/u, (req, res) => {
+  app.options(/^\/api\/projects\/([^/]+)\/raw\/?$|\/raw\/(.+)$/u, (req, res) => {
     if (req.headers.origin === 'null') {
       res.header('Access-Control-Allow-Origin', '*');
       res.header('Access-Control-Allow-Methods', 'GET');
       res.header('Access-Control-Allow-Headers', 'Content-Type');
     }
     res.sendStatus(204);
+  });
+
+  // Fallback for /raw/ with no file path: redirect to index.html
+  app.get(/^\/api\/projects\/([^/]+)\/raw\/?$/u, async (req, res) => {
+    try {
+      const projectId = String(req.params[0] ?? '');
+      const project = getProject(db, projectId);
+      const files: Array<{ name: string; kind?: string }> = await listFiles(PROJECTS_DIR, projectId, {
+        metadata: project?.metadata,
+      });
+      const index = files.find((f: any): boolean => /^index\.html?$/i.test(f.name));
+      if (index) {
+        res.redirect(`/api/projects/${encodeURIComponent(projectId)}/raw/${encodeURIComponent(index.name)}`);
+        return;
+      }
+      const first = files.find((f: any): boolean => f.kind === 'html');
+      if (first) {
+        res.redirect(`/api/projects/${encodeURIComponent(projectId)}/raw/${encodeURIComponent(first.name)}`);
+        return;
+      }
+      res.status(404).json({ error: 'No viewable file found' });
+    } catch {
+      res.status(500).json({ error: 'Failed to load project' });
+    }
   });
 
   app.get(/^\/api\/projects\/([^/]+)\/raw\/(.+)$/u, async (req, res) => {

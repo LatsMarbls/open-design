@@ -2261,6 +2261,7 @@ export const hu: Dict = {
   'fileViewer.exportJsx': 'Exportálás JSX-ként',
   'fileViewer.exportReactHtml': 'Előnézet exportálása HTML-ként',
   'fileViewer.exportStarted': 'Az exportálás elindult',
+    'fileViewer.exportNuxtProject': 'Download as Nuxt Project',     'fileViewer.exportLaravelProject': 'Download as Laravel Project',     'fileViewer.shareMenuFramework': 'Framework Export',     'fileViewer.openInStackBlitz': 'Open in StackBlitz',     'fileViewer.copyFrameworkCode': 'Copy Code to Clipboard',
   'fileViewer.saveAsTemplate': 'Mentés sablonként…',
   'fileViewer.savingTemplate': 'Sablon mentése…',
   'fileViewer.savedTemplate': 'Mentve „{name}" néven',

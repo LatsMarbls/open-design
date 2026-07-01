@@ -2261,6 +2261,7 @@ export const fa: Dict = {
   'fileViewer.exportJsx': 'صادرکردن به JSX',
   'fileViewer.exportReactHtml': 'صادرکردن پیش‌نمایش به HTML',
   'fileViewer.exportStarted': 'خروجی‌گیری آغاز شد',
+    'fileViewer.exportNuxtProject': 'Download as Nuxt Project',     'fileViewer.exportLaravelProject': 'Download as Laravel Project',     'fileViewer.shareMenuFramework': 'Framework Export',     'fileViewer.openInStackBlitz': 'Open in StackBlitz',     'fileViewer.copyFrameworkCode': 'Copy Code to Clipboard',
   'fileViewer.saveAsTemplate': 'ذخیره به عنوان قالب…',
   'fileViewer.savingTemplate': 'در حال ذخیره قالب…',
   'fileViewer.savedTemplate': 'به عنوان «{name}» ذخیره شد',

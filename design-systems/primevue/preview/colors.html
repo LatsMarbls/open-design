@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PrimeVue colors</title>
+    <link rel="stylesheet" href="../tokens.css" />
+    <style>
+      body { margin: 0; background: var(--p-surface-ground); color: var(--p-text-color); font-family: var(--p-font-family); }
+      main { max-width: var(--p-container-max); margin: 0 auto; padding: var(--p-spacing-12) var(--p-spacing-6); }
+      h1 { margin: 0 0 var(--p-spacing-8); font-family: var(--p-font-family-display); font-size: var(--p-font-size-3xl); line-height: var(--p-line-height-display); letter-spacing: var(--p-letter-spacing-tight); color: var(--p-text-color); }
+      h2 { margin: 0 0 var(--p-spacing-4); font-family: var(--p-font-family-display); font-size: var(--p-font-size-xl); line-height: var(--p-line-height-display); color: var(--p-text-color); }
+
+      .section { margin-block-end: var(--p-spacing-10); }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--p-spacing-4); }
+      .swatch { border: 1px solid var(--p-border-color); border-radius: var(--p-border-radius-lg); background: var(--p-surface-card); overflow: hidden; box-shadow: var(--p-shadow-sm); }
+      .color { height: 88px; background: var(--value); }
+      .meta { padding: var(--p-spacing-3); color: var(--p-text-secondary-color); font-size: var(--p-font-size-sm); }
+      strong { display: block; margin-bottom: var(--p-spacing-1); color: var(--p-text-color); }
+
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Color roles</h1>
+
+      <section class="section">
+        <h2>Surface ramp (slate)</h2>
+        <div class="grid">
+          <article class="swatch" style="--value: var(--p-surface-0)"><div class="color" style="border: 1px solid var(--p-border-soft-color)"></div><div class="meta"><strong>Surface 0</strong>--p-surface-0</div></article>
+          <article class="swatch" style="--value: var(--p-surface-50)"><div class="color"></div><div class="meta"><strong>Surface 50</strong>--p-surface-50</div></article>
+          <article class="swatch" style="--value: var(--p-surface-100)"><div class="color"></div><div class="meta"><strong>Surface 100</strong>--p-surface-100</div></article>
+          <article class="swatch" style="--value: var(--p-surface-200)"><div class="color"></div><div class="meta"><strong>Surface 200</strong>--p-surface-200</div></article>
+          <article class="swatch" style="--value: var(--p-surface-300)"><div class="color"></div><div class="meta"><strong>Surface 300</strong>--p-surface-300</div></article>
+          <article class="swatch" style="--value: var(--p-surface-400)"><div class="color"></div><div class="meta"><strong>Surface 400</strong>--p-surface-400</div></article>
+          <article class="swatch" style="--value: var(--p-surface-500)"><div class="color"></div><div class="meta"><strong>Surface 500</strong>--p-surface-500</div></article>
+          <article class="swatch" style="--value: var(--p-surface-600)"><div class="color"></div><div class="meta"><strong>Surface 600</strong>--p-surface-600</div></article>
+          <article class="swatch" style="--value: var(--p-surface-700)"><div class="color"></div><div class="meta"><strong>Surface 700</strong>--p-surface-700</div></article>
+          <article class="swatch" style="--value: var(--p-surface-800)"><div class="color"></div><div class="meta"><strong>Surface 800</strong>--p-surface-800</div></article>
+          <article class="swatch" style="--value: var(--p-surface-900)"><div class="color"></div><div class="meta"><strong>Surface 900</strong>--p-surface-900</div></article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Primary ramp (indigo)</h2>
+        <div class="grid">
+          <article class="swatch" style="--value: var(--p-primary-50)"><div class="color"></div><div class="meta"><strong>Primary 50</strong>--p-primary-50</div></article>
+          <article class="swatch" style="--value: var(--p-primary-100)"><div class="color"></div><div class="meta"><strong>Primary 100</strong>--p-primary-100</div></article>
+          <article class="swatch" style="--value: var(--p-primary-200)"><div class="color"></div><div class="meta"><strong>Primary 200</strong>--p-primary-200</div></article>
+          <article class="swatch" style="--value: var(--p-primary-300)"><div class="color"></div><div class="meta"><strong>Primary 300</strong>--p-primary-300</div></article>
+          <article class="swatch" style="--value: var(--p-primary-400)"><div class="color"></div><div class="meta"><strong>Primary 400</strong>--p-primary-400</div></article>
+          <article class="swatch" style="--value: var(--p-primary-500)"><div class="color"></div><div class="meta"><strong>Primary 500</strong>--p-primary-500</div></article>
+          <article class="swatch" style="--value: var(--p-primary-600)"><div class="color"></div><div class="meta"><strong>Primary 600</strong>--p-primary-600</div></article>
+          <article class="swatch" style="--value: var(--p-primary-700)"><div class="color"></div><div class="meta"><strong>Primary 700</strong>--p-primary-700</div></article>
+          <article class="swatch" style="--value: var(--p-primary-800)"><div class="color"></div><div class="meta"><strong>Primary 800</strong>--p-primary-800</div></article>
+          <article class="swatch" style="--value: var(--p-primary-900)"><div class="color"></div><div class="meta"><strong>Primary 900</strong>--p-primary-900</div></article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Semantic &amp; role swatches</h2>
+        <div class="grid">
+          <article class="swatch" style="--value: var(--p-surface-ground)"><div class="color"></div><div class="meta"><strong>Surface Ground</strong>--p-surface-ground</div></article>
+          <article class="swatch" style="--value: var(--p-surface-card)"><div class="color" style="border: 1px solid var(--p-border-soft-color)"></div><div class="meta"><strong>Surface Card</strong>--p-surface-card</div></article>
+          <article class="swatch" style="--value: var(--p-primary-color)"><div class="color"></div><div class="meta"><strong>Primary</strong>--p-primary-color</div></article>
+          <article class="swatch" style="--value: var(--p-text-color)"><div class="color"></div><div class="meta"><strong>Text</strong>--p-text-color</div></article>
+          <article class="swatch" style="--value: var(--p-text-secondary-color)"><div class="color"></div><div class="meta"><strong>Text Secondary</strong>--p-text-secondary-color</div></article>
+          <article class="swatch" style="--value: var(--p-border-color)"><div class="color"></div><div class="meta"><strong>Border</strong>--p-border-color</div></article>
+          <article class="swatch" style="--value: var(--p-success-color)"><div class="color"></div><div class="meta"><strong>Success</strong>--p-success-color</div></article>
+          <article class="swatch" style="--value: var(--p-info-color)"><div class="color"></div><div class="meta"><strong>Info</strong>--p-info-color</div></article>
+          <article class="swatch" style="--value: var(--p-warn-color)"><div class="color"></div><div class="meta"><strong>Warning</strong>--p-warn-color</div></article>
+          <article class="swatch" style="--value: var(--p-danger-color)"><div class="color"></div><div class="meta"><strong>Danger</strong>--p-danger-color</div></article>
+        </div>
+      </section>
+
+    </main>
+  </body>
+</html>

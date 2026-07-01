@@ -1,0 +1,618 @@
+/* ─────────────────────────────────────────────────────────────────────────
+ * design-systems/primevue/tokens.css
+ *
+ * Structured token bindings for "PrimeVue" — the popular Vue 3 component
+ * library by PrimeTek with a Material-inspired design philosophy, modern
+ * Aura theme. PrimeVue's brand is clean, accessible, and component-driven:
+ * indigo primary (--p-primary-*), slate neutrals (--p-surface-*),
+ * Inter body text, 4px spacing base, and a consistent elevation/shadow
+ * system derived from Material Design principles.
+ *
+ * This file pre-compiles the values described in `DESIGN.md` into the
+ * shared schema. Agents generating an artifact for PrimeVue should paste
+ * the `:root` block verbatim into the first `<style>` of the artifact,
+ * then reference everything via `var(--p-*)`.
+ *
+ * Brand-specific schema decisions:
+ *
+ *   1. `--p-primary-color` is `#6366F1` (Indigo-500) — the canonical
+ *      PrimeVue Aura primary. Unlike shadcn's black-on-white, PrimeVue
+ *      uses a chromatic indigo that carries hover (`#4F46E5`) and active
+ *      (`#4338CA`) states that darken naturally.
+ *
+ *   2. `--p-text-color` is `#334155` (Slate-700), NOT pure black. The
+ *      slate neutral system provides warmth without being warm-tinted;
+ *      body copy stays readable while matching PrimeVue's design language.
+ *
+ *   3. The surface ramp spans 50–900 like Tailwind slate, providing
+ *      fine-grained control for page background (surface-50), section
+ *      backgrounds (surface-100), card surfaces (surface-0), and text
+ *      contrast tiers.
+ *
+ *   4. `--p-focus-ring-*` uses a double-ring pattern: 2px solid white
+ *      offset + 2px solid primary indicator ring, matching PrimeVue's
+ *      accessible focus treatment.
+ *
+ *   5. `--p-border-radius-*` uses a Material-inspired scale: none (0),
+ *      xs (2px), sm (4px), md (6px), lg (8px), xl (12px), pill (9999px).
+ *      PrimeVue defaults to `--p-border-radius-md: 6px` for most
+ *      components.
+ *
+ *   6. Elevation tokens follow Material Design shadow levels:
+ *      --p-shadow-{sm,md,lg,xl} map to 1-4 dp elevation. PrimeVue
+ *      overlays (dialog, drawer, dropdown) use the full stack.
+ *
+ *   7. Type scale: Inter for body/display (DESIGN.md §3), JetBrains Mono
+ *      for code. The scale extends from 12px (caption) to 48px (hero)
+ *      with Inter's open-source licensing making it safe for any project.
+ *
+ *   8. Gap tokens: 4px base (--p-gap-1) through 48px (--p-gap-12)
+ *      following the PrimeVue convention of `gap-*` utility naming.
+ *
+ *   9. Component-specific tokens for: button, inputtext, card, dialog,
+ *      dropdown, checkbox, radiobutton, badge, chip, menu, datatable,
+ *      panel, accordion, tabs, message, toast — each a `--p-<component>-*`
+ *      group so overrides are scoped without affecting unrelated surfaces.
+ *
+ * Source contracts:
+ *   - Standard token names: design-systems/_schema/tokens.schema.ts
+ *   - A2 fallback parity:   design-systems/_schema/defaults.css
+ *   - Lint enforcement:     apps/daemon/src/lint-artifact.ts
+ *
+ * Keep this file additive: never invent token names not also
+ * documented in DESIGN.md or the schema. Inter and JetBrains Mono are
+ * referenced through OS-fallback stacks so artifacts render acceptably
+ * even when the faces are not loaded.
+ * ─────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* ─── Surface ramp ────────────────────────────────────────────────
+   * PrimeVue Aura uses a slate-based neutral ramp where each step maps
+   * to a Tailwind-inspired slate level. surface-0 is the brightest
+   * (card/page surface), surface-50 is the page background alternative,
+   * surface-100 for section differentiation, and surface-200 for
+   * hover/selected states. The dark end (800/900) provides high-
+   * contrast text backgrounds. */
+  --p-surface-0: #ffffff;
+  --p-surface-50: #f8fafc;
+  --p-surface-100: #f1f5f9;
+  --p-surface-200: #e2e8f0;
+  --p-surface-300: #cbd5e1;
+  --p-surface-400: #94a3b8;
+  --p-surface-500: #64748b;
+  --p-surface-600: #475569;
+  --p-surface-700: #334155;
+  --p-surface-800: #1e293b;
+  --p-surface-900: #0f172a;
+
+  /* Surface role aliases */
+  --p-surface-ground: var(--p-surface-50);
+  --p-surface-section: var(--p-surface-100);
+  --p-surface-card: var(--p-surface-0);
+  --p-surface-overlay: var(--p-surface-0);
+  --p-surface-hover: var(--p-surface-200);
+  --p-surface-border: var(--p-surface-300);
+
+  /* ─── Primary ramp (Indigo) ──────────────────────────────────────
+   * PrimeVue Aura's identity color. Indigo-50 through 950 provides
+   * the full tint/shade range for backgrounds, text, borders, and
+   * hover/active states. All primary actions use this ramp. */
+  --p-primary-50: #eef2ff;
+  --p-primary-100: #e0e7ff;
+  --p-primary-200: #c7d2fe;
+  --p-primary-300: #a5b4fc;
+  --p-primary-400: #818cf8;
+  --p-primary-500: #6366f1;          /* Indigo-500 — canonical primary */
+  --p-primary-600: #4f46e5;          /* hover state */
+  --p-primary-700: #4338ca;          /* active/pressed state */
+  --p-primary-800: #3730a3;
+  --p-primary-900: #312e81;
+
+  /* Primary role aliases */
+  --p-primary-color: var(--p-primary-500);
+  --p-primary-contrast-color: #ffffff;
+  --p-primary-hover-color: var(--p-primary-600);
+  --p-primary-active-color: var(--p-primary-700);
+  --p-primary-text-color: var(--p-primary-500);
+  --p-primary-light-bg: var(--p-primary-50);
+  --p-primary-light-text: var(--p-primary-700);
+
+  /* ─── Text ──────────────────────────────────────────────────────
+   * PrimeVue uses Slate-700 (#334155) as the default body color.
+   * Secondary/muted text uses Slate-500 (#64748b). Placeholder and
+   * disabled text use increasingly lighter values for hierarchy. */
+  --p-text-color: var(--p-surface-700);
+  --p-text-secondary-color: var(--p-surface-500);
+  --p-text-placeholder-color: var(--p-surface-400);
+  --p-text-disabled-color: var(--p-surface-400);
+  --p-text-muted-color: var(--p-surface-400);
+  --p-text-hover-color: var(--p-surface-800);
+
+  /* ─── Semantic colors ───────────────────────────────────────────
+   * Standard PrimeVue Aura semantic palette. Used for messages,
+   * badges, validation, and state feedback. */
+  --p-info-color: #3b82f6;           /* blue-500 */
+  --p-info-contrast-color: #ffffff;
+  --p-success-color: #22c55e;        /* green-500 */
+  --p-success-contrast-color: #ffffff;
+  --p-warn-color: #f59e0b;           /* amber-500 */
+  --p-warn-contrast-color: #ffffff;
+  --p-danger-color: #ef4444;         /* red-500 */
+  --p-danger-contrast-color: #ffffff;
+
+  /* Semantic backgrounds for Tags/Badges */
+  --p-info-light-bg: #eff6ff;
+  --p-success-light-bg: #f0fdf4;
+  --p-warn-light-bg: #fffbeb;
+  --p-danger-light-bg: #fef2f2;
+
+  /* ─── Border ─────────────────────────────────────────────────────
+   * PrimeVue uses a single default border color derived from the
+   * surface ramp. Soft borders are slightly lighter for card edges. */
+  --p-border-color: var(--p-surface-300);
+  --p-border-soft-color: var(--p-surface-200);
+  --p-border-strong-color: var(--p-surface-400);
+  --p-border-width: 1px;
+  --p-border-style: solid;
+
+  /* ─── Border radius ─────────────────────────────────────────────
+   * Material-inspired radius scale. PrimeVue Aura defaults to 6px
+   * (--p-border-radius-md) for most components. Buttons use sm (4px),
+   * cards use md (6px), dialogs use lg (8px), and chips/badges pill. */
+  --p-border-radius-none: 0px;
+  --p-border-radius-xs: 2px;
+  --p-border-radius-sm: 4px;
+  --p-border-radius-md: 6px;
+  --p-border-radius-lg: 8px;
+  --p-border-radius-xl: 12px;
+  --p-border-radius-pill: 9999px;
+
+  /* ─── Typography ─────────────────────────────────────────────────
+   * Inter is the PrimeVue Aura default font — clean, highly legible,
+   * open-source with a large x-height for UI density. JetBrains Mono
+   * for code blocks and monospace contexts. */
+  --p-font-family: "Inter", -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --p-font-family-display: "Inter", -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --p-font-family-mono: "JetBrains Mono", ui-monospace, "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+
+  /* Type scale (px) — DESIGN.md §3: 12/14/16/18/20/24/32/40/48 */
+  --p-font-size-caption: 12px;
+  --p-font-size-sm: 14px;
+  --p-font-size-base: 16px;
+  --p-font-size-lg: 18px;
+  --p-font-size-xl: 20px;
+  --p-font-size-2xl: 24px;
+  --p-font-size-3xl: 32px;
+  --p-font-size-4xl: 40px;
+  --p-font-size-5xl: 48px;
+
+  /* Font weights */
+  --p-font-weight-light: 300;
+  --p-font-weight-normal: 400;
+  --p-font-weight-medium: 500;
+  --p-font-weight-semibold: 600;
+  --p-font-weight-bold: 700;
+
+  /* Line heights */
+  --p-line-height-sm: 1.25;
+  --p-line-height-base: 1.5;
+  --p-line-height-lg: 1.75;
+  --p-line-height-display: 1.2;
+
+  /* Letter spacing */
+  --p-letter-spacing-tight: -0.02em;
+  --p-letter-spacing-normal: 0em;
+  --p-letter-spacing-wide: 0.04em;
+
+  /* ─── Spacing (4px base scale) ──────────────────────────────────
+   * DESIGN.md §4 documents 4/8/12/16/20/24/32/40/48. The 4px grid
+   * drives all padding, margin, and gap decisions. */
+  --p-spacing-0: 0px;
+  --p-spacing-1: 4px;
+  --p-spacing-2: 8px;
+  --p-spacing-3: 12px;
+  --p-spacing-4: 16px;
+  --p-spacing-5: 20px;
+  --p-spacing-6: 24px;
+  --p-spacing-8: 32px;
+  --p-spacing-10: 40px;
+  --p-spacing-12: 48px;
+
+  /* Gap shorthand (same values, semantic in naming) */
+  --p-gap-1: 4px;
+  --p-gap-2: 8px;
+  --p-gap-3: 12px;
+  --p-gap-4: 16px;
+  --p-gap-5: 20px;
+  --p-gap-6: 24px;
+  --p-gap-8: 32px;
+  --p-gap-10: 40px;
+  --p-gap-12: 48px;
+
+  /* Section rhythm */
+  --p-section-y-desktop: 96px;
+  --p-section-y-tablet: 64px;
+  --p-section-y-phone: 48px;
+
+  /* Container */
+  --p-container-max: 1280px;
+  --p-container-gutter-desktop: 24px;
+  --p-container-gutter-tablet: 16px;
+  --p-container-gutter-phone: 16px;
+
+  /* ─── Elevation / Shadow ───────────────────────────────────────
+   * Material-inspired elevation levels. PrimeVue Aura uses shadows
+   * to indicate component hierarchy: sm for cards, md for dropdowns,
+   * lg for dialogs, xl for overlays and toasts. */
+  --p-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --p-shadow-md: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --p-shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --p-shadow-xl: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --p-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --p-shadow-inner: inset 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --p-shadow-none: none;
+
+  /* ─── Focus ring ───────────────────────────────────────────────
+   * PrimeVue Aura focus style: 2px white offset + 2px primary ring.
+   * The white offset prevents the primary ring from bleeding into
+   * colored backgrounds. Applied uniformly to all focusable comps. */
+  --p-focus-ring-width: 2px;
+  --p-focus-ring-style: solid;
+  --p-focus-ring-color: var(--p-primary-500);
+  --p-focus-ring-offset: 2px;
+  --p-focus-ring-offset-color: #ffffff;
+  --p-focus-ring: 0 0 0 var(--p-focus-ring-width) var(--p-focus-ring-offset-color),
+                   0 0 0 calc(var(--p-focus-ring-width) + var(--p-focus-ring-offset)) var(--p-focus-ring-color);
+
+  /* ─── Motion ─────────────────────────────────────────────────────
+   * PrimeVue standard transition durations and easing. Matches the
+   * Material Design spec — quick entrances/exits with natural easing. */
+  --p-transition-duration: 150ms;
+  --p-transition-duration-fast: 100ms;
+  --p-transition-duration-slow: 250ms;
+  --p-easing-standard: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --p-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --p-easing-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  --p-easing-accelerate: cubic-bezier(0.4, 0, 1, 1);
+
+  /* ═══════════════════════════════════════════════════════════════════
+   * COMPONENT-SPECIFIC TOKENS
+   * Each block corresponds to a PrimeVue component and its documented
+   * visual properties. Tokens are prefixed with --p-<component>-
+   * following PrimeVue's CSS variable naming convention.
+   * ═════════════════════════════════════════════════════════════════ */
+
+  /* ─── Button ─────────────────────────────────────────────────── */
+  --p-button-padding-x: 16px;
+  --p-button-padding-y: 8px;
+  --p-button-font-size: var(--p-font-size-sm);
+  --p-button-font-weight: var(--p-font-weight-medium);
+  --p-button-border-radius: var(--p-border-radius-md);
+  --p-button-gap: var(--p-gap-2);
+  --p-button-primary-bg: var(--p-primary-color);
+  --p-button-primary-color: var(--p-primary-contrast-color);
+  --p-button-primary-border: var(--p-primary-color);
+  --p-button-primary-hover-bg: var(--p-primary-hover-color);
+  --p-button-primary-hover-color: var(--p-primary-contrast-color);
+  --p-button-primary-hover-border: var(--p-primary-hover-color);
+  --p-button-primary-active-bg: var(--p-primary-active-color);
+  --p-button-primary-active-color: var(--p-primary-contrast-color);
+  --p-button-primary-active-border: var(--p-primary-active-color);
+  --p-button-secondary-bg: var(--p-surface-0);
+  --p-button-secondary-color: var(--p-surface-700);
+  --p-button-secondary-border: var(--p-surface-300);
+  --p-button-secondary-hover-bg: var(--p-surface-100);
+  --p-button-ghost-color: var(--p-text-secondary-color);
+  --p-button-ghost-hover-bg: var(--p-surface-100);
+  --p-button-text-color: var(--p-primary-color);
+  --p-button-text-hover-bg: var(--p-primary-50);
+  --p-button-outlined-color: var(--p-primary-color);
+  --p-button-outlined-border: var(--p-primary-300);
+  --p-button-outlined-hover-bg: var(--p-primary-50);
+  --p-button-raised-shadow: var(--p-shadow-sm);
+  --p-button-rounded-radius: var(--p-border-radius-pill);
+  --p-button-icon-size: 16px;
+  --p-button-sm-padding-x: 12px;
+  --p-button-sm-padding-y: 6px;
+  --p-button-sm-font-size: 12px;
+  --p-button-lg-padding-x: 20px;
+  --p-button-lg-padding-y: 12px;
+  --p-button-lg-font-size: 16px;
+
+  /* ─── InputText ──────────────────────────────────────────────── */
+  --p-inputtext-padding-x: 12px;
+  --p-inputtext-padding-y: 8px;
+  --p-inputtext-font-size: var(--p-font-size-sm);
+  --p-inputtext-font-family: var(--p-font-family);
+  --p-inputtext-color: var(--p-text-color);
+  --p-inputtext-bg: var(--p-surface-0);
+  --p-inputtext-border-color: var(--p-border-color);
+  --p-inputtext-border-radius: var(--p-border-radius-md);
+  --p-inputtext-hover-border-color: var(--p-primary-color);
+  --p-inputtext-focus-border-color: var(--p-primary-color);
+  --p-inputtext-focus-shadow: var(--p-focus-ring);
+  --p-inputtext-placeholder-color: var(--p-text-placeholder-color);
+  --p-inputtext-disabled-bg: var(--p-surface-100);
+  --p-inputtext-disabled-color: var(--p-text-disabled-color);
+  --p-inputtext-invalid-border-color: var(--p-danger-color);
+  --p-inputtext-icon-color: var(--p-text-secondary-color);
+  --p-inputtext-sm-padding-x: 8px;
+  --p-inputtext-sm-padding-y: 6px;
+  --p-inputtext-lg-padding-x: 12px;
+  --p-inputtext-lg-padding-y: 10px;
+
+  /* ─── Card ────────────────────────────────────────────────────── */
+  --p-card-bg: var(--p-surface-card);
+  --p-card-color: var(--p-text-color);
+  --p-card-border-color: var(--p-border-soft-color);
+  --p-card-border-radius: var(--p-border-radius-lg);
+  --p-card-padding: var(--p-spacing-6);
+  --p-card-gap: var(--p-gap-4);
+  --p-card-shadow: var(--p-shadow-sm);
+  --p-card-hover-shadow: var(--p-shadow-md);
+  --p-card-title-font-size: var(--p-font-size-xl);
+  --p-card-title-font-weight: var(--p-font-weight-semibold);
+  --p-card-subtitle-font-size: var(--p-font-size-sm);
+  --p-card-subtitle-color: var(--p-text-secondary-color);
+
+  /* ─── Dialog ──────────────────────────────────────────────────── */
+  --p-dialog-bg: var(--p-surface-overlay);
+  --p-dialog-color: var(--p-text-color);
+  --p-dialog-border-radius: var(--p-border-radius-xl);
+  --p-dialog-shadow: var(--p-shadow-2xl);
+  --p-dialog-header-padding: 24px 24px 0 24px;
+  --p-dialog-header-font-size: var(--p-font-size-xl);
+  --p-dialog-header-font-weight: var(--p-font-weight-semibold);
+  --p-dialog-content-padding: 24px;
+  --p-dialog-footer-padding: 0 24px 24px 24px;
+  --p-dialog-footer-gap: var(--p-gap-3);
+  --p-dialog-overlay-bg: rgba(0, 0, 0, 0.4);
+  --p-dialog-transition-duration: var(--p-transition-duration);
+  --p-dialog-max-width: 600px;
+  --p-dialog-min-width: 300px;
+
+  /* ─── Dropdown ────────────────────────────────────────────────── */
+  --p-dropdown-bg: var(--p-surface-0);
+  --p-dropdown-color: var(--p-text-color);
+  --p-dropdown-border-color: var(--p-border-color);
+  --p-dropdown-border-radius: var(--p-border-radius-md);
+  --p-dropdown-hover-border-color: var(--p-primary-color);
+  --p-dropdown-focus-border-color: var(--p-primary-color);
+  --p-dropdown-focus-shadow: var(--p-focus-ring);
+  --p-dropdown-panel-bg: var(--p-surface-overlay);
+  --p-dropdown-panel-border-radius: var(--p-border-radius-lg);
+  --p-dropdown-panel-shadow: var(--p-shadow-lg);
+  --p-dropdown-item-padding: 10px 12px;
+  --p-dropdown-item-hover-bg: var(--p-surface-100);
+  --p-dropdown-item-hover-color: var(--p-text-color);
+  --p-dropdown-item-selected-bg: var(--p-primary-50);
+  --p-dropdown-item-selected-color: var(--p-primary-700);
+  --p-dropdown-item-font-size: var(--p-font-size-sm);
+  --p-dropdown-item-gap: var(--p-gap-2);
+  --p-dropdown-empty-message-color: var(--p-text-secondary-color);
+  --p-dropdown-transition-duration: var(--p-transition-duration);
+
+  /* ─── Checkbox ────────────────────────────────────────────────── */
+  --p-checkbox-width: 20px;
+  --p-checkbox-height: 20px;
+  --p-checkbox-bg: var(--p-surface-0);
+  --p-checkbox-border-color: var(--p-border-color);
+  --p-checkbox-border-radius: var(--p-border-radius-xs);
+  --p-checkbox-border-width: 2px;
+  --p-checkbox-hover-border-color: var(--p-primary-color);
+  --p-checkbox-checked-bg: var(--p-primary-color);
+  --p-checkbox-checked-border-color: var(--p-primary-color);
+  --p-checkbox-checked-hover-bg: var(--p-primary-hover-color);
+  --p-checkbox-checked-hover-border-color: var(--p-primary-hover-color);
+  --p-checkbox-focus-shadow: var(--p-focus-ring);
+  --p-checkbox-icon-color: var(--p-primary-contrast-color);
+  --p-checkbox-icon-size: 12px;
+  --p-checkbox-disabled-bg: var(--p-surface-100);
+
+  /* ─── RadioButton ─────────────────────────────────────────────── */
+  --p-radiobutton-width: 20px;
+  --p-radiobutton-height: 20px;
+  --p-radiobutton-bg: var(--p-surface-0);
+  --p-radiobutton-border-color: var(--p-border-color);
+  --p-radiobutton-border-width: 2px;
+  --p-radiobutton-hover-border-color: var(--p-primary-color);
+  --p-radiobutton-checked-bg: var(--p-primary-color);
+  --p-radiobutton-checked-border-color: var(--p-primary-color);
+  --p-radiobutton-checked-hover-bg: var(--p-primary-hover-color);
+  --p-radiobutton-checked-hover-border-color: var(--p-primary-hover-color);
+  --p-radiobutton-focus-shadow: var(--p-focus-ring);
+  --p-radiobutton-icon-color: var(--p-primary-contrast-color);
+  --p-radiobutton-icon-size: 10px;
+  --p-radiobutton-disabled-bg: var(--p-surface-100);
+
+  /* ─── Badge ────────────────────────────────────────────────────── */
+  --p-badge-font-size: var(--p-font-size-caption);
+  --p-badge-font-weight: var(--p-font-weight-medium);
+  --p-badge-padding-x: 8px;
+  --p-badge-padding-y: 2px;
+  --p-badge-border-radius: var(--p-border-radius-pill);
+  --p-badge-min-width: 20px;
+  --p-badge-min-height: 20px;
+  --p-badge-primary-bg: var(--p-primary-color);
+  --p-badge-primary-color: var(--p-primary-contrast-color);
+  --p-badge-info-bg: var(--p-info-color);
+  --p-badge-info-color: var(--p-info-contrast-color);
+  --p-badge-success-bg: var(--p-success-color);
+  --p-badge-success-color: var(--p-success-contrast-color);
+  --p-badge-warn-bg: var(--p-warn-color);
+  --p-badge-warn-color: var(--p-warn-contrast-color);
+  --p-badge-danger-bg: var(--p-danger-color);
+  --p-badge-danger-color: var(--p-danger-contrast-color);
+  --p-badge-lg-font-size: 14px;
+  --p-badge-lg-padding-x: 10px;
+  --p-badge-lg-min-width: 24px;
+  --p-badge-lg-min-height: 24px;
+  --p-badge-xl-font-size: 16px;
+  --p-badge-xl-padding-x: 12px;
+  --p-badge-xl-min-width: 28px;
+  --p-badge-xl-min-height: 28px;
+  --p-badge-dot-width: 8px;
+  --p-badge-dot-height: 8px;
+
+  /* ─── Chip ──────────────────────────────────────────────────────── */
+  --p-chip-padding-x: 10px;
+  --p-chip-padding-y: 4px;
+  --p-chip-border-radius: var(--p-border-radius-pill);
+  --p-chip-bg: var(--p-surface-100);
+  --p-chip-color: var(--p-text-color);
+  --p-chip-font-size: var(--p-font-size-sm);
+  --p-chip-gap: var(--p-gap-2);
+  --p-chip-remove-icon-size: 14px;
+  --p-chip-remove-icon-color: var(--p-text-secondary-color);
+  --p-chip-remove-icon-hover-color: var(--p-text-color);
+  --p-chip-image-width: 28px;
+  --p-chip-image-height: 28px;
+  --p-chip-image-border-radius: var(--p-border-radius-pill);
+  --p-chip-focused-bg: var(--p-primary-100);
+  --p-chip-focused-color: var(--p-primary-700);
+  --p-chip-transition-duration: var(--p-transition-duration);
+
+  /* ─── Menu ────────────────────────────────────────────────────── */
+  --p-menu-bg: var(--p-surface-overlay);
+  --p-menu-border-radius: var(--p-border-radius-lg);
+  --p-menu-shadow: var(--p-shadow-lg);
+  --p-menu-padding: 4px;
+  --p-menu-gap: 2px;
+  --p-menu-item-padding: 10px 12px;
+  --p-menu-item-border-radius: var(--p-border-radius-md);
+  --p-menu-item-color: var(--p-text-color);
+  --p-menu-item-font-size: var(--p-font-size-sm);
+  --p-menu-item-hover-bg: var(--p-surface-100);
+  --p-menu-item-hover-color: var(--p-text-color);
+  --p-menu-item-focus-bg: var(--p-primary-50);
+  --p-menu-item-focus-color: var(--p-primary-700);
+  --p-menu-item-icon-color: var(--p-text-secondary-color);
+  --p-menu-item-icon-size: 16px;
+  --p-menu-item-gap: var(--p-gap-3);
+  --p-menu-submenu-indicator-color: var(--p-text-secondary-color);
+  --p-menu-separator-color: var(--p-border-soft-color);
+  --p-menu-separator-margin: 4px 0;
+  --p-menu-transition-duration: var(--p-transition-duration);
+
+  /* ─── DataTable ───────────────────────────────────────────────── */
+  --p-datatable-bg: var(--p-surface-card);
+  --p-datatable-border-color: var(--p-border-soft-color);
+  --p-datatable-border-radius: var(--p-border-radius-lg);
+  --p-datatable-header-bg: var(--p-surface-50);
+  --p-datatable-header-color: var(--p-text-color);
+  --p-datatable-header-font-size: var(--p-font-size-sm);
+  --p-datatable-header-font-weight: var(--p-font-weight-semibold);
+  --p-datatable-header-padding: 12px 16px;
+  --p-datatable-body-font-size: var(--p-font-size-sm);
+  --p-datatable-body-color: var(--p-text-color);
+  --p-datatable-body-padding: 12px 16px;
+  --p-datatable-row-hover-bg: var(--p-surface-50);
+  --p-datatable-row-even-bg: var(--p-surface-50);
+  --p-datatable-row-selected-bg: var(--p-primary-50);
+  --p-datatable-row-selected-color: var(--p-primary-700);
+  --p-datatable-footer-bg: var(--p-surface-50);
+  --p-datatable-footer-color: var(--p-text-color);
+  --p-datatable-footer-padding: 12px 16px;
+  --p-datatable-sort-icon-color: var(--p-text-secondary-color);
+  --p-datatable-sort-icon-active-color: var(--p-primary-color);
+  --p-datatable-shadow: var(--p-shadow-sm);
+
+  /* ─── Panel ──────────────────────────────────────────────────── */
+  --p-panel-bg: var(--p-surface-card);
+  --p-panel-border-color: var(--p-border-soft-color);
+  --p-panel-border-radius: var(--p-border-radius-lg);
+  --p-panel-shadow: var(--p-shadow-sm);
+  --p-panel-header-bg: var(--p-surface-50);
+  --p-panel-header-color: var(--p-text-color);
+  --p-panel-header-padding: 16px 20px;
+  --p-panel-header-font-size: var(--p-font-size-base);
+  --p-panel-header-font-weight: var(--p-font-weight-semibold);
+  --p-panel-toggle-color: var(--p-text-secondary-color);
+  --p-panel-toggle-hover-color: var(--p-text-color);
+  --p-panel-content-padding: 20px;
+  --p-panel-footer-padding: 16px 20px;
+  --p-panel-footer-bg: var(--p-surface-50);
+  --p-panel-transition-duration: var(--p-transition-duration);
+
+  /* ─── Accordion ───────────────────────────────────────────────── */
+  --p-accordion-bg: var(--p-surface-card);
+  --p-accordion-border-color: var(--p-border-soft-color);
+  --p-accordion-border-radius: var(--p-border-radius-lg);
+  --p-accordion-header-bg: var(--p-surface-0);
+  --p-accordion-header-color: var(--p-text-color);
+  --p-accordion-header-padding: 14px 16px;
+  --p-accordion-header-font-size: var(--p-font-size-base);
+  --p-accordion-header-font-weight: var(--p-font-weight-medium);
+  --p-accordion-header-hover-bg: var(--p-surface-100);
+  --p-accordion-header-hover-color: var(--p-text-color);
+  --p-accordion-header-active-bg: var(--p-primary-50);
+  --p-accordion-header-active-color: var(--p-primary-700);
+  --p-accordion-header-toggle-icon-color: var(--p-text-secondary-color);
+  --p-accordion-content-padding: 16px;
+  --p-accordion-content-color: var(--p-text-color);
+  --p-accordion-content-bg: var(--p-surface-0);
+  --p-accordion-transition-duration: var(--p-transition-duration);
+
+  /* ─── Tabs ─────────────────────────────────────────────────────── */
+  --p-tabs-bg: transparent;
+  --p-tabs-border-color: var(--p-border-soft-color);
+  --p-tabs-border-width: 1px;
+  --p-tabs-tab-padding: 12px 16px;
+  --p-tabs-tab-font-size: var(--p-font-size-sm);
+  --p-tabs-tab-font-weight: var(--p-font-weight-medium);
+  --p-tabs-tab-color: var(--p-text-secondary-color);
+  --p-tabs-tab-hover-color: var(--p-text-color);
+  --p-tabs-tab-active-color: var(--p-primary-color);
+  --p-tabs-tab-active-border-color: var(--p-primary-color);
+  --p-tabs-tab-active-font-weight: var(--p-font-weight-semibold);
+  --p-tabs-tab-disabled-color: var(--p-text-disabled-color);
+  --p-tabs-panel-padding: 16px 0;
+  --p-tabs-gap: 0px;
+  --p-tabs-transition-duration: var(--p-transition-duration);
+
+  /* ─── Message ──────────────────────────────────────────────────── */
+  --p-message-padding: 12px 16px;
+  --p-message-border-radius: var(--p-border-radius-md);
+  --p-message-font-size: var(--p-font-size-sm);
+  --p-message-font-weight: var(--p-font-weight-normal);
+  --p-message-gap: var(--p-gap-3);
+  --p-message-info-bg: var(--p-info-light-bg);
+  --p-message-info-color: #1e40af;
+  --p-message-info-border-color: #bfdbfe;
+  --p-message-success-bg: var(--p-success-light-bg);
+  --p-message-success-color: #166534;
+  --p-message-success-border-color: #bbf7d0;
+  --p-message-warn-bg: var(--p-warn-light-bg);
+  --p-message-warn-color: #92400e;
+  --p-message-warn-border-color: #fde68a;
+  --p-message-danger-bg: var(--p-danger-light-bg);
+  --p-message-danger-color: #991b1b;
+  --p-message-danger-border-color: #fecaca;
+  --p-message-icon-size: 18px;
+  --p-message-close-icon-size: 14px;
+  --p-message-close-icon-color: inherit;
+  --p-message-transition-duration: var(--p-transition-duration);
+
+  /* ─── Toast ────────────────────────────────────────────────────── */
+  --p-toast-bg: var(--p-surface-overlay);
+  --p-toast-color: var(--p-text-color);
+  --p-toast-border-radius: var(--p-border-radius-lg);
+  --p-toast-shadow: var(--p-shadow-xl);
+  --p-toast-padding: 16px;
+  --p-toast-gap: var(--p-gap-3);
+  --p-toast-width: 360px;
+  --p-toast-title-font-size: var(--p-font-size-base);
+  --p-toast-title-font-weight: var(--p-font-weight-semibold);
+  --p-toast-detail-font-size: var(--p-font-size-sm);
+  --p-toast-detail-color: var(--p-text-secondary-color);
+  --p-toast-icon-size: 22px;
+  --p-toast-info-icon-color: var(--p-info-color);
+  --p-toast-success-icon-color: var(--p-success-color);
+  --p-toast-warn-icon-color: var(--p-warn-color);
+  --p-toast-danger-icon-color: var(--p-danger-color);
+  --p-toast-close-icon-size: 16px;
+  --p-toast-close-icon-color: var(--p-text-secondary-color);
+  --p-toast-close-hover-icon-color: var(--p-text-color);
+  --p-toast-transition-duration: var(--p-transition-duration);
+  --p-toast-transition-duration-slow: var(--p-transition-duration-slow);
+}

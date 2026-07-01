@@ -77,4 +77,5 @@ od:
 - **字号极端反差**: cover 用 9.6vw display, body 14-16px, label 11px uppercase letterspacing 0.08em。
 - **键盘 ← / → 切换 + hash 同步**; 角标固定: `№N/N` 右下, topic 标签左下。
 - **不许编造**: 数字必须来自用户输入, 图表柱高 = 真实数据按比例。
-- 输出单文件 HTML, 不用任何外部图片 URL; 装饰几何 (ASCII 矩阵 / 同心圆) 用纯 CSS 或内联 SVG。
+- 输出单文件 HTML: 在 `<head>` 中加载 `<script src="https://cdn.tailwindcss.com"></script>`; 用 Tailwind 实用类完成 90% 的样式 (`flex`, `grid`, `gap`, `text-*`, `p-*`, `border`, `bg-*` 等), 只有在 Tailwind 不支持的情况下才使用自定义 CSS (如 ASCII 矩阵动画、极细 hairline 装饰)。
+- 不用任何外部图片 URL; 装饰几何 (ASCII 矩阵 / 同心圆) 用纯 CSS 或内联 SVG。

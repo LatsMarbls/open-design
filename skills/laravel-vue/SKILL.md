@@ -59,6 +59,33 @@ To bypass this heuristic, `index.html` MUST load all CDN scripts **dynamically**
 
 **DO NOT** use `vue.global.prod.js` — the prod build lacks the runtime compiler that `vue3-sfc-loader` needs. Always use `vue.global.js`.
 
+### Inertia props simulation
+
+The OD preview pane injects an automatic Laravel/Inertia simulation script when the `Laravel + Inertia` framework is selected. This provides:
+
+- **Props debug panel** — a collapsible panel at the bottom of the preview that shows all `defineProps(...)` on the root component, with live-editable input fields
+- **Mock data generation** — the script reads the component's prop definitions and generates mock values based on the prop type (String → `"Mock {name}"`, Number → `42`, Boolean → `true`, Array → `[]`, Object → `{}`)
+- **Live prop editing** — changing values in the debug panel inputs updates the Vue component's props in real-time, re-rendering with the new values
+- **Inertia badge** — a small badge in the top-right showing `Inertia Mode — Page: {component name}`
+- **Console log** — `[OD Laravel] Props simulation active` confirms the bridge loaded
+
+You do NOT need to add any extra scripts to `index.html` for this — the OD preview pane injects the simulation automatically. However, to get the most out of it:
+
+1. Use `defineProps` in your `.vue` SFCs at the root component level (the script reads props from the component mounted at `#app`)
+2. Give your components a `name` option or use `<script setup>` with meaningful file names so the Inertia badge displays a useful page name
+3. Use `defineProps` with type annotations for better mock data generation:
+   ```vue
+   <script setup>
+   defineProps({
+     title: String,
+     count: Number,
+     items: Array,
+     config: Object,
+   })
+   </script>
+   ```
+4. The debug panel is collapsible — click the header to toggle it open/closed
+
 ### Tailwind CSS — Play CDN (no build step)
 
 The preview has no PostCSS or Tailwind CLI. Use the **Tailwind Play CDN** (`https://cdn.tailwindcss.com`) which generates utility CSS in the browser at runtime by scanning the DOM. It uses a `MutationObserver` to pick up new classes as Vue renders components dynamically.

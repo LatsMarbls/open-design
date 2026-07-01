@@ -13,6 +13,7 @@ export type ProjectFileKind =
   | 'document'
   | 'presentation'
   | 'spreadsheet'
+  | 'vue-component'
   | 'binary';
 
 // Surfaced when the daemon's stub-guard runs in `warn` mode and detects a

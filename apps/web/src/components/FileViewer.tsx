@@ -68,6 +68,10 @@ import {
   exportAsJsx,
   exportAsMd,
   exportAsPdf,
+  exportAsNuxtProject,
+  exportAsLaravelProject,
+  openInStackBlitz,
+  copyFrameworkCode,
   exportProjectAsHtml,
   exportProjectAsPdf,
   exportProjectAsZip,
@@ -156,6 +160,31 @@ function resolveChromeActionsHost(): HTMLElement | null {
 
 type TranslateFn = (key: keyof Dict, vars?: Record<string, string | number>) => string;
 type SlideState = { active: number; count: number };
+
+const FRAMEWORK_BADGE_STORAGE_KEY = 'open-design:framework';
+
+function readPreviewFrameworkBadge(): { label: string; className: string } | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const stored = window.localStorage.getItem(FRAMEWORK_BADGE_STORAGE_KEY);
+    if (stored === 'nuxt') return { label: 'Nuxt 3', className: 'framework-badge nuxt' };
+    if (stored === 'laravel') return { label: 'Laravel + Inertia', className: 'framework-badge laravel' };
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
+function readPreviewFramework(): 'html' | 'nuxt' | 'laravel' {
+  if (typeof window === 'undefined') return 'html';
+  try {
+    const stored = window.localStorage.getItem(FRAMEWORK_BADGE_STORAGE_KEY);
+    if (stored === 'nuxt' || stored === 'laravel') return stored;
+  } catch {
+    // ignore
+  }
+  return 'html';
+}
 type BoardTool = 'inspect' | 'pod';
 type StrokePoint = { x: number; y: number };
 export type ManualEditPendingStyleSave = {
@@ -5465,6 +5494,8 @@ function HtmlViewer({
     };
   }, [source, effectiveDeck, projectId, file.name, reloadKey, useUrlLoadPreview]);
 
+  const currentFramework = useMemo(() => readPreviewFramework(), [filesRefreshKey, reloadKey]);
+
   const srcDoc = useMemo(
     () => (previewSource ? buildSrcdoc(previewSource, {
       deck: effectiveDeck,
@@ -5483,8 +5514,9 @@ function HtmlViewer({
       editBridge: true,
       paletteBridge: false,
       previewFocusGuard: true,
+      framework: currentFramework,
     }) : ''),
-    [previewSource, effectiveDeck, projectId, file.name, previewStateKey],
+    [previewSource, effectiveDeck, projectId, file.name, previewStateKey, currentFramework],
   );
   const lazySrcDocTransport = useMemo(() => buildLazySrcdocTransport(), []);
   const [srcDocTransportResetKey, setSrcDocTransportResetKey] = useState(0);
@@ -8644,6 +8676,10 @@ function HtmlViewer({
               </button>
             ))}
           </div>
+          {(() => {
+            const badge = readPreviewFrameworkBadge();
+            return badge ? <span className={badge.className}>{badge.label}</span> : null;
+          })()}
           {showPreviewToolbarControls ? (
             <>
               <span className="viewer-divider" aria-hidden />
@@ -9096,7 +9132,105 @@ function HtmlViewer({
                       <span className="share-menu-icon"><RemixIcon name="file-line" size={15} /></span>
                       <span>{t('fileViewer.exportMd')}</span>
                     </button>
-                  ) : null}
+                   ) : null}
+                  {(() => {
+                    const fw = currentFramework;
+                    if (fw === 'html') return null;
+                    const label = fw === 'nuxt' ? t('fileViewer.exportNuxtProject') : t('fileViewer.exportLaravelProject');
+                    return (
+                      <>
+                        <div className="share-menu-divider" />
+                        <div className="share-menu-section-label" role="presentation">
+                          {t('fileViewer.shareMenuFramework')}
+                        </div>
+                        <button
+                          type="button"
+                          className="share-menu-item"
+                          role="menuitem"
+                          onClick={() => {
+                            setDownloadMenuOpen(false);
+                            void (async () => {
+                              try {
+                                const entries = await fetchProjectFiles(projectId);
+                                const fileEntries = await Promise.all(
+                                  entries
+                                    .filter((e) => e.kind === 'code' || e.kind === 'text' || e.name.endsWith('.vue') || e.name.endsWith('.ts') || e.name.endsWith('.tsx') || e.name.endsWith('.js') || e.name.endsWith('.jsx') || e.name.endsWith('.css') || e.name.endsWith('.html'))
+                                    .map(async (e) => {
+                                      const text = await fetchProjectFileText(projectId, e.name);
+                                      return { path: e.name, content: text ?? '' };
+                                    }),
+                                );
+                                if (fw === 'nuxt') {
+                                  await exportAsNuxtProject(fileEntries, exportTitle);
+                                } else {
+                                  await exportAsLaravelProject(fileEntries, exportTitle);
+                                }
+                              } catch (err) {
+                                console.warn('[framework export] failed:', err);
+                              }
+                            })();
+                          }}
+                        >
+                          <span className="share-menu-icon"><RemixIcon name="file-zip-line" size={15} /></span>
+                          <span>{label}</span>
+                        </button>
+                        <button
+                          type="button"
+                          className="share-menu-item"
+                          role="menuitem"
+                          onClick={() => {
+                            setDownloadMenuOpen(false);
+                            void (async () => {
+                              try {
+                                const entries = await fetchProjectFiles(projectId);
+                                const fileEntries = await Promise.all(
+                                  entries
+                                    .filter((e) => e.kind === 'code' || e.kind === 'text' || e.name.endsWith('.vue') || e.name.endsWith('.ts') || e.name.endsWith('.tsx') || e.name.endsWith('.js') || e.name.endsWith('.jsx') || e.name.endsWith('.css') || e.name.endsWith('.html'))
+                                    .map(async (e) => {
+                                      const text = await fetchProjectFileText(projectId, e.name);
+                                      return { path: e.name, content: text ?? '' };
+                                    }),
+                                );
+                                await openInStackBlitz(fileEntries, fw);
+                              } catch (err) {
+                                console.warn('[stackblitz] failed:', err);
+                              }
+                            })();
+                          }}
+                        >
+                          <span className="share-menu-icon"><RemixIcon name="external-link-line" size={15} /></span>
+                          <span>{t('fileViewer.openInStackBlitz')}</span>
+                        </button>
+                        <button
+                          type="button"
+                          className="share-menu-item"
+                          role="menuitem"
+                          onClick={() => {
+                            setDownloadMenuOpen(false);
+                            void (async () => {
+                              try {
+                                const entries = await fetchProjectFiles(projectId);
+                                const fileEntries = await Promise.all(
+                                  entries
+                                    .filter((e) => e.kind === 'code' || e.kind === 'text' || e.name.endsWith('.vue') || e.name.endsWith('.ts') || e.name.endsWith('.tsx') || e.name.endsWith('.js') || e.name.endsWith('.jsx') || e.name.endsWith('.css') || e.name.endsWith('.html'))
+                                    .map(async (e) => {
+                                      const text = await fetchProjectFileText(projectId, e.name);
+                                      return { path: e.name, content: text ?? '' };
+                                    }),
+                                );
+                                await copyFrameworkCode(fileEntries, fw);
+                              } catch (err) {
+                                console.warn('[copy code] failed:', err);
+                              }
+                            })();
+                          }}
+                        >
+                          <span className="share-menu-icon"><RemixIcon name="file-copy-line" size={15} /></span>
+                          <span>{t('fileViewer.copyFrameworkCode')}</span>
+                        </button>
+                      </>
+                    );
+                  })()}
                   <div className="share-menu-divider" />
                   <div className="share-menu-section-label" role="presentation">
                     {t('fileViewer.shareMenuSave')}

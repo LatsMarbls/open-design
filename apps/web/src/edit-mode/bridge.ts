@@ -1,50 +1,60 @@
-export const MANUAL_EDIT_DISCOVERY_SELECTOR =
-  'main, nav, section, article, aside, header, footer, div, h1, h2, h3, h4, h5, h6, p, a, button, img, ul, ol, li, dl, dt, dd, table, thead, tbody, tfoot, tr, td, th, caption, blockquote, figure, figcaption, label, summary, pre, code, strong, em, b, i, small, mark, span';
-export const MANUAL_EDIT_SOURCE_PATH_ATTR = 'data-od-source-path';
-export const MANUAL_EDIT_HOST_NODE_SELECTOR = [
-  '[data-od-sandbox-shim]',
-  '[data-od-deck-bridge]',
-  '[data-od-comment-bridge]',
-  '[data-od-edit-bridge]',
-  '[data-od-comment-bridge-style]',
-  '[data-od-edit-bridge-style]',
-  '[data-od-deck-fix]',
-].join(',');
+import {
+  EDIT_DISCOVERY_SELECTOR,
+  EDIT_HOST_NODE_SELECTOR,
+  EDIT_SOURCE_PATH_ATTR,
+  isSourceMappable,
+  isHostNode,
+  isVisibleTarget,
+  meaningfulDomFallbackTarget,
+  domSelectorFor,
+  domPathForElement,
+  stableIdForElement,
+  buildMeaningfulDomFallbackJs,
+  buildDomSelectorForJs,
+} from './selection-utils';
+
+export const MANUAL_EDIT_DISCOVERY_SELECTOR = EDIT_DISCOVERY_SELECTOR;
+export const MANUAL_EDIT_SOURCE_PATH_ATTR = EDIT_SOURCE_PATH_ATTR;
+export const MANUAL_EDIT_HOST_NODE_SELECTOR = EDIT_HOST_NODE_SELECTOR;
 
 export type ManualEditKind = 'text' | 'link' | 'image' | 'container';
 
+/**
+ * Delegates to shared `domPathForElement`, excluding host nodes inline.
+ */
 export function manualEditDomPathForElement(el: Element): string {
-  const parts: number[] = [];
-  let node: Element | null = el;
-  while (node && node !== node.ownerDocument.body) {
-    const parentEl: Element | null = node.parentElement;
-    if (!parentEl) break;
-    const children = Array.from(parentEl.children).filter((child) => !isManualEditHostNode(child));
-    parts.unshift(children.indexOf(node));
-    node = parentEl;
-  }
-  return parts.length ? `path-${parts.join('-')}` : '';
+  return domPathForElement(el);
 }
 
+/**
+ * Delegates to shared `isHostNode`.
+ */
 export function isManualEditHostNode(el: Element): boolean {
-  return el.matches(MANUAL_EDIT_HOST_NODE_SELECTOR);
+  return isHostNode(el);
 }
 
+/**
+ * Delegates to shared `stableIdForElement` with the edit-mode attr names.
+ */
 export function manualEditStableIdForElement(el: Element): string {
-  const explicit = el.getAttribute('data-od-id');
-  if (explicit) return explicit;
-  const generated = el.getAttribute(MANUAL_EDIT_SOURCE_PATH_ATTR) || el.getAttribute('data-od-runtime-id') || manualEditDomPathForElement(el);
-  if (generated) el.setAttribute('data-od-runtime-id', generated);
-  return generated || 'unknown';
+  return stableIdForElement(el);
 }
 
+/**
+ * Check if an element is meaningful for edit mode: must be source-mappable,
+ * match the discovery selector, and have minimum dimensions.
+ */
 export function isMeaningfulManualEditElement(el: Element, rect: Pick<DOMRect, 'width' | 'height'>): boolean {
   return isSourceMappableManualEditElement(el) && el.matches(MANUAL_EDIT_DISCOVERY_SELECTOR) && rect.width >= 4 && rect.height >= 4;
 }
 
+/**
+ * Check if an element is source-mappable (has data-od-id or data-od-source-path)
+ * and is not a host node.
+ */
 export function isSourceMappableManualEditElement(el: Element): boolean {
   if (isManualEditHostNode(el)) return false;
-  return el.hasAttribute('data-od-id') || el.hasAttribute(MANUAL_EDIT_SOURCE_PATH_ATTR);
+  return isSourceMappable(el);
 }
 
 /**
@@ -165,12 +175,16 @@ export function buildManualEditKeyboardGuard(): string {
 }
 
 export function buildManualEditBridge(enabled: boolean): string {
+  const fallbackJs = buildMeaningfulDomFallbackJs();
+  const selectorJs = buildDomSelectorForJs();
   return `<script data-od-edit-bridge>(function(){
   var enabled = ${JSON.stringify(enabled)};
   var discoverySelector = ${JSON.stringify(MANUAL_EDIT_DISCOVERY_SELECTOR)};
   var hostNodeSelector = ${JSON.stringify(MANUAL_EDIT_HOST_NODE_SELECTOR)};
   var sourcePathAttr = ${JSON.stringify(MANUAL_EDIT_SOURCE_PATH_ATTR)};
   var styleProps = ['fontFamily','fontSize','fontWeight','color','textAlign','lineHeight','letterSpacing','width','height','minHeight','gap','flexDirection','justifyContent','alignItems','backgroundColor','opacity','padding','paddingTop','paddingRight','paddingBottom','paddingLeft','margin','marginTop','marginRight','marginBottom','marginLeft','border','borderTopWidth','borderRightWidth','borderBottomWidth','borderLeftWidth','borderStyle','borderColor','borderRadius'];
+  ${fallbackJs}
+  ${selectorJs}
   function isHostNode(el){
     return !!(el && el.matches && el.matches(hostNodeSelector));
   }
@@ -359,13 +373,20 @@ export function buildManualEditBridge(enabled: boolean): string {
   }
   function allTargets(){
     annotateBrandKitRuntimeTargets();
-    var nodes = document.body ? document.body.querySelectorAll(discoverySelector) : [];
+    var query = enabled ? 'body *' : discoverySelector;
+    var nodes = document.body ? document.body.querySelectorAll(query) : [];
     var targets = [];
+    var seen = Object.create(null);
     for (var i = 0; i < nodes.length; i++) {
       var rect = nodes[i].getBoundingClientRect();
-      if (!isSourceMappable(nodes[i])) continue;
+      var mappable = isSourceMappable(nodes[i]);
+      if (!mappable && !meaningfulDomFallbackTarget(nodes[i])) continue;
       if (!isHiddenTarget(nodes[i], rect) && (rect.width < 4 || rect.height < 4)) continue;
-      targets.push(targetFrom(nodes[i], false));
+      var target = targetFrom(nodes[i], false);
+      if (target && !seen[target.id]) {
+        seen[target.id] = true;
+        targets.push(target);
+      }
     }
     return targets;
   }
@@ -395,8 +416,11 @@ export function buildManualEditBridge(enabled: boolean): string {
     annotateBrandKitRuntimeTargets();
     var el = event.target;
     while (el && el !== document.documentElement) {
-      if (el !== document.body && el !== document.documentElement && isSourceMappable(el) && isDiscoveryTarget(el)) {
-        return el;
+      if (el !== document.body && el !== document.documentElement && isDiscoveryTarget(el)) {
+        if (isSourceMappable(el)) return el;
+        // DOM fallback for Vue/dynamic content: use heuristics when
+        // no explicit data-od-id / data-od-source-path exists.
+        if (meaningfulDomFallbackTarget(el)) return el;
       }
       el = el.parentElement;
     }
