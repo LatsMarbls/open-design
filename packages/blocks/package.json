@@ -1,0 +1,43 @@
+{
+  "name": "@open-design/blocks",
+  "version": "0.11.1",
+  "private": true,
+  "type": "module",
+  "description": "Block-based component system for Open Design visual editor.",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.mjs"
+    },
+    "./registry": {
+      "types": "./dist/core/registry.d.ts",
+      "default": "./dist/core/registry.mjs"
+    },
+    "./blocks": {
+      "types": "./dist/blocks/index.d.ts",
+      "default": "./dist/blocks/index.mjs"
+    },
+    "./validator": {
+      "types": "./dist/validators/block-validator.d.ts",
+      "default": "./dist/validators/block-validator.mjs"
+    }
+  },
+  "scripts": {
+    "build": "node ./esbuild.config.mjs && tsc -p tsconfig.json --emitDeclarationOnly",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.tests.json --noEmit"
+  },
+  "dependencies": {
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.0",
+    "typescript": "5.9.3",
+    "vitest": "4.1.6"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "@open-design/codegen",
+  "version": "0.11.1",
+  "private": true,
+  "type": "module",
+  "description": "Code generation system for Open Design visual editor",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "build": "node ./esbuild.config.mjs && tsc -p tsconfig.json --emitDeclarationOnly",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@open-design/blocks": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vitest": "4.1.6",
+    "esbuild": "0.28.0"
+  }
+}
